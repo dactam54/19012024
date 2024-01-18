@@ -1,0 +1,11 @@
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "cellphones",
+    "host": "localhost",
+    "dialect": "mysql",
+    "logging": false,
+    "timezone": "+07:00"
+  }
+}

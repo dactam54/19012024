@@ -1,0 +1,6 @@
+
+### Insert data into database
+POST http://localhost:5000/api/v1/insert/product
+
+### Insert brand
+POST http://localhost:5000/api/v1/insert/brand

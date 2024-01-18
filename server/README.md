@@ -1,0 +1,1 @@
+**Create migrated file:** `npx sequelize-cli model:generate --name User --attributes example:string`

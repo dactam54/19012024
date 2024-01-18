@@ -1,0 +1,24 @@
+const actionTypes = {
+
+   
+    ALERT: 'ALERT',
+    LOGIN: 'LOGIN',
+    SHOW_CART: 'SHOW_CART',
+    UPDATE_CURRENT: 'UPDATE_CURRENT',
+    CART: 'CART',
+    LOADING: 'LOADING',
+    ADMIN: 'ADMIN',
+    LOGOUT: 'LOGOUT',
+    CAL_PRICE: 'CAL_PRICE',
+    REMOVE_PRODUCT: 'REMOVE_PRODUCT',
+    UPDATE_PRICE: 'UPDATE_PRICE',
+    GET_BRAND: 'GET_BRAND',
+    SET_CART: 'SET_CART',
+    SKU: 'SKU',
+    RESET_ORDER: 'RESET_ORDER',
+    DEL_ORDER: 'DEL_ORDER',
+    CART_ANON: 'CART_ANON'
+
+}
+
+export default actionTypes

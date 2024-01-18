@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  password    String
+  cart        Json?
+  address     String?
+  wishlist    Json?
+  role        Role         @default(user)
+  phone       String?
+
+  hoaDons     HoaDon[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("users")
+}
+
+enum Role {
+  user
+  admin
+}
+
+// model Token {
+//   id          String    @id @default(cuid())
+//   createdAt   DateTime  @default(now())
+//   updatedAt   DateTime  @updatedAt
+//   type        TokenType
+//   email       String    @unique
+//   hashedToken String
+//   expiresAt   DateTime
+//   userId      String?
+//   user        User?     @relation(fields: [userId], references: [id])
+
+//   @@map("tokens")
+// }
+
+model Product {
+  id             String       @id @default(cuid())
+  name           String
+  thumb          String?
+  specThumb      String @map("spec_thumb")
+  brand          String
+  policy         Json?
+  detail         Json?
+  images         Json?
+  overviews      Json?
+  catalog        String
+  views          Int          @default(0)
+  catalogslug    String
+  discount       Int?
+  quantity       Int
+  star           Int
+  desc           String?
+
+  hoaDons        HoaDon[]
+  theKhos        TheKho[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("products")
+}
+
+model HoaDon {
+  id Int @id @default(autoincrement())
+  maHoaDon String @unique
+
+  customerId Int
+  customer User @relation(fields: [customerId], references: [id])
+
+  productId String 
+  product Product @relation(fields: [productId], references: [id])
+
+  hoaDonXuatId Int?
+  hoaDonXuat HoaDonXuat? @relation(fields: [hoaDonXuatId], references: [id])
+
+  hoaDonNhapId Int?
+  hoaDonNhap HoaDonNhap? @relation(fields: [hoaDonNhapId], references: [id])
+
+  theKhos TheKho[]
+
+  quantity Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("hoa_don")
+}
+
+model HoaDonNhap {
+  id Int @id @default(autoincrement())
+  maHoaDon String @unique
+  hoaDons HoaDon[]
+  status Status @default(pending)
+  user String?
+  shipper String?
+    // ngày nhập
+  date DateTime? 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("hoa_don_nhap")
+}
+
+enum Status {
+  pending
+  success
+  cancel
+}
+
+model HoaDonXuat {
+  id Int @id @default(autoincrement())
+  maHoaDon String @unique
+  hoaDons HoaDon[]
+  status Status @default(pending)
+
+  user String?
+  shipper String?
+    // ngày nhập
+  date DateTime? 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("hoa_don_xuat")
+}
+
+enum LoaiTheKho {
+  nhap
+  xuat
+}
+model TheKho {
+  id Int @id @default(autoincrement())
+  hoaDonId Int? 
+  hoaDon HoaDon? @relation(fields: [hoaDonId], references: [id])
+  productId String
+  type LoaiTheKho @default(nhap)
+  product Product @relation(fields: [productId], references: [id])
+  status Status @default(pending)
+
+  // ngày nhập
+  date DateTime? 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("the_kho")
+}
