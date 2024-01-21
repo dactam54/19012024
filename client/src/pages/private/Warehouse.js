@@ -45,25 +45,25 @@ const columns = [
     editable: true,
   },
   {
-    field: "quantityProduct",
+    field: "name",
     name: "Tên sản phẩm",
     width: 150,
     editable: true,
   },
   {
-    field: "quantityProduct",
+    field: "brand",
     name: "Nhãn hiệu",
     width: 150,
     editable: true,
   },
   {
-    field: "createdAt",
+    field: "type",
     name: "Loại hàng",
     width: 150,
     editable: true,
   },
   {
-    field: "createdAt",
+    field: "quantity",
     name: "Số lượng",
     width: 150,
     editable: true,
@@ -317,7 +317,7 @@ const Warehouse = () => {
                 <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
                  Thẻ kho
                 </h1>
-                <div>Ngày lập thẻ :   
+                <div>Người lập thẻ :   
                 </div>
                 <div>Tên sản phẩm :
                 <span>{dataModal[0]?.product?.name}</span>  

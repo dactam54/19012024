@@ -162,6 +162,7 @@ const fetchData = async () => {
     const response2 = await apiGetAllPhieuNhap();
     setLoading(false);  
     const data = [ ...response1,...response2];
+    
     if (dateRange.startDate || dateRange.endDate) {
       let end = dateRange.endDate ? new Date(dateRange.endDate) : new Date();
       let start =dateRange.startDate ? new Date(dateRange.startDate) :new Date(end - 30 * 24 * 60 * 60 * 1000);
@@ -174,14 +175,18 @@ const fetchData = async () => {
       setData(filterDate);
     } else if (keySearch) {
       const filteredSearch = data.filter((item) => {
+
         if (item.hoaDons[0].hoaDonNhapId && !isNaN(item.hoaDons[0].hoaDonNhapId)) {
           if (parseInt(item.hoaDons[0].hoaDonNhapId) > 0) {
-            
             return "Phiếu nhập".toLowerCase().includes(keySearch.toLowerCase());
-          } else {
-            
+          } 
+
+        }else if(item.hoaDons[0].hoaDonXuatId && !isNaN(item.hoaDons[0].hoaDonXuatId)){
+
+          if (parseInt(item.hoaDons[0].hoaDonXuatId) > 0) {
             return "Phiếu xuất".toLowerCase().includes(keySearch.toLowerCase());
-          }
+          } 
+          
         } else {
           return item.maHoaDon.toLowerCase().includes(keySearch.toLowerCase()) || item.user.toLowerCase().includes(keySearch.toLowerCase()) || item.shipper.toLowerCase().includes(keySearch.toLowerCase());
         }

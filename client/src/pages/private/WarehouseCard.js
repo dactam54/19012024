@@ -31,6 +31,13 @@ const style = {
 };
 const columns = [
   { field: "id", name: "ID", width: 90 },
+ 
+  {
+    field: "maHoaDon",
+    name: "Mã chứng từ",
+    width: 150,
+    editable: true,
+  },
   {
     field: "image",
     name: "Ảnh sản phẩm",
@@ -82,6 +89,27 @@ const WarehouseCard = () => {
   };
   const handleClose = () => setOpen(false);
 
+  // const handleRender = async (id) => {
+  //   try {
+  //     console.log("idmodal", id);
+
+  //     const [responsePhieuKhoNhap, responsePhieuKhoXuat] = await Promise.all([
+  //       apiPhieuKhoNhap(id),
+  //       apiPhieuKhoXuat(id),
+  //     ]);
+  //     const dataTitle = responsePhieuKhoNhap.hoaDons.map(
+  //       (item) => typeof item.hoaDonNhapId !== Number
+  //     )
+  //       ? responsePhieuKhoXuat
+  //       : responsePhieuKhoNhap;
+  //     console.log("dataModal:", dataTitle);
+  //     setDataModal(dataTitle);
+  //     handleOpen();
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
   const handleRender = async (id) => {
     try {
       console.log("idmodal", id);
@@ -90,19 +118,14 @@ const WarehouseCard = () => {
         apiPhieuKhoNhap(id),
         apiPhieuKhoXuat(id),
       ]);
-      const dataTitle = responsePhieuKhoNhap.hoaDons.map(
-        (item) => typeof item.hoaDonNhapId !== Number
-      )
-        ? responsePhieuKhoXuat
-        : responsePhieuKhoNhap;
-      console.log("dataModal:", dataTitle);
+      const dataTitle = (responsePhieuKhoNhap.hoaDons.map((item)=> typeof(item.hoaDonNhapId) !== Number   )) ? responsePhieuKhoNhap: responsePhieuKhoXuat;
+      console.log("DataModal:", dataTitle);
       setDataModal(dataTitle);
       handleOpen();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
-
+  }
   const handleChangePage = (event, newpage) => {
     setPage(newpage);
   };
@@ -111,7 +134,8 @@ const WarehouseCard = () => {
     setRowPerPage(+event.target.value);
     setPage(0);
   };
-
+  const [keySearch, setKeySearch] = useState("");
+// console.log("keySearch", keySearch);
   const fetchData = async () => {
     setLoading(true);
     if (!dateRange.startDate || !dateRange.endDate) {
@@ -125,18 +149,27 @@ const WarehouseCard = () => {
         endDate,
       });
     }
-
     console.log("dateRange", dateRange);
     const response = await apiGetAllTheKhos({
       startDate: dateRange.startDate,
       endDate: dateRange.endDate,
     });
-    setLoading(false);
+
     if (response.length > 0) setData(response);
-    console.log(
-      "data123",
-      response.map((item) => item)
-    );
+    setLoading(false);
+    console.log("response", response);
+
+    // if(keySearch){
+    //   setLoading(true);
+    //   const filterData = response.filter((item) => {
+    //     return item.maHoaDon.toLowerCase().includes(keySearch.toLowerCase());
+    //   })
+    //   console.log("filterData", filterData);
+    //   setLoading(false);
+    //   setData(filterData);
+      
+    // }
+
   };
 
   const handleStartDateChange = (e) => {
@@ -174,6 +207,13 @@ const WarehouseCard = () => {
   return (
     <div style={{ textAlign: "center" }}>
       <h3 className="font-bold text-[30px] pb-2 ">Thông tin phiếu</h3>
+      <input
+          type="text"
+          className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
+          placeholder="Nhập thông tin cần tìm kiếm"
+          onChange={(e) => setKeySearch(e.target.value)}
+        />
+      <span>Lọc theo khoảng thời gian</span>
       <div>
         <label htmlFor="startDate">Chọn ngày bắt đầu:</label>
         <input
@@ -243,6 +283,7 @@ const WarehouseCard = () => {
                       return (
                         <TableRow hover key={row.id}>
                           <TableCell>{index + 1}</TableCell>
+                          <TableCell>{row.hoaDon.maHoaDon}</TableCell>
                           <TableCell>
                             <img
                               src={row.product.thumb}

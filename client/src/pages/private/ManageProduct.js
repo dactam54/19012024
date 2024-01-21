@@ -28,6 +28,7 @@ const ManageProduct = () => {
     setLoading(false);
     if (response.err === 0) setProducts(response.productDatas);
     console.log("response1", response.productDatas.rows);
+  
   };
 
   useEffect(() => {
@@ -73,7 +74,15 @@ const ManageProduct = () => {
         description: "This column has a value getter and is not sortable.",
         sortable: false,
         width: 160,
+        
       },
+      // {
+      //   field: "boughtProducts.length",
+      //   headerName: "Đã xuất",
+      //   description: "This column has a value getter and is not sortable.",
+      //   sortable: true,
+      //   width: 160,
+      // },
       {
         field: "quantity",
         headerName: "Số lượng",
