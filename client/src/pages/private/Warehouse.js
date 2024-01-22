@@ -203,6 +203,7 @@ const Warehouse = () => {
 });
 const paperRef1 = useRef();
 
+
 const handlePrint1 = useReactToPrint({
   onBeforeGetContent: () => setLoading(true),
   content: () => paperRef1.current,
@@ -212,6 +213,16 @@ const handlePrint1 = useReactToPrint({
       console.log(err);
   },
 });
+
+// const handlePrint1 = useReactToPrint({
+//   onBeforeGetContent: () => setLoading(true),
+//   content: () => paperRef1.current,
+//   onAfterPrint: () => setLoading(false),
+//   onPrintError: (err) => {
+//      toast.error("Có lỗi xảy ra khi in phiếu");
+//       console.log(err);
+//   },
+// });
   
 
 
@@ -234,19 +245,29 @@ let handleExport = async () =>{
   return (
     <div style={{ textAlign: "center" }}>
       <h3 className="font-bold text-[30px] pb-2 ">Thông tin kho</h3>
+      <div>
       <input
         type="text"
         className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
         placeholder="Tìm kiếm nhãn hiệu"
         onChange={(e) => setKeySearch(e.target.value)}
+        // style={{ width: "80%" }}
       />
+      <button
+                type='button'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2'
+                 onClick={() => handlePrint1()}>
+                <span>Xuất file </span>
+            </button>
+      </div>
+      
       <div>
         
       </div>
       {loading ? (
         <Loading />
       ) : (
-        <Paper sx={{ width: "100%" }}>
+        <Paper sx={{ width: "100%" }} ref={paperRef1}>
           <TableContainer sx={{ maxHeight: 850 }}>
             <Table stickyHeader>
               <TableHead>
@@ -286,7 +307,7 @@ let handleExport = async () =>{
                       ?.slice(page * rowPerPage, page * rowPerPage + rowPerPage)
                       .map((row, index) => {
                         return (
-                          <TableRow hover key={row.id}>
+                          <TableRow hover key={row.id} >
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>
                               <img
@@ -313,7 +334,7 @@ let handleExport = async () =>{
                       ?.slice(page * rowPerPage, page * rowPerPage + rowPerPage)
                       .map((row, index) => {
                         return (
-                          <TableRow hover key={row.id}>
+                          <TableRow hover key={row.id} ref={paperRef1}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>
                               <img
@@ -348,6 +369,7 @@ let handleExport = async () =>{
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleRowsPerPage}
           ></TablePagination>
+         
         </Paper>
       )}
 
@@ -357,7 +379,6 @@ let handleExport = async () =>{
               onClose={handleClose}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
-              
             >
               <Box sx={style} ref={paperRef}>
                 <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -447,13 +468,7 @@ let handleExport = async () =>{
               </Box>
             </Modal>)
      } 
-     <button
-                type='button'
-                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2'
-                 onClick={() => handleExport()}>
-                
-                <span>Xuất file </span>
-            </button>
+    
     </div>
     
   );

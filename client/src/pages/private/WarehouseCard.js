@@ -20,6 +20,10 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import {useReactToPrint} from 'react-to-print';
 import { toast } from "react-toastify";
+// import XLSX from 'xlsx/xlsx.mjs';
+import Xlsx from '../../utils/Xlsx'
+import * as XLSX from 'xlsx/xlsx.mjs';
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -73,6 +77,7 @@ const columns = [
     editable: true,
   },
 ];
+
 const WarehouseCard = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
@@ -86,6 +91,9 @@ const WarehouseCard = () => {
     endDate: "",
   });
 
+ 
+
+ 
   const handleOpen = () => {
     setOpen(true);
   };
@@ -177,6 +185,16 @@ const WarehouseCard = () => {
 
   };
 
+  let handleExcel = async () =>{
+    let response1 = await apiGetAllTheKhos({
+    type :'SUBJECT',
+    limit :'',
+    offset:'',
+    keyword:''
+})
+if(response1 && response1.err === 0){
+    await Xlsx.exportExcel(response1,'Thẻ kho','Thẻ kho')
+}}
   const handleStartDateChange = (e) => {
     setDateRange((prev) => ({
       ...prev,
@@ -340,6 +358,12 @@ const WarehouseCard = () => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleRowsPerPage}
           ></TablePagination>
+            <button
+                type='button'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2'
+                 onClick={() => handleExcel}>
+                <span>Xuất file </span>
+            </button>
         </Paper>
       )}
 
@@ -429,6 +453,7 @@ const WarehouseCard = () => {
                 </Paper>
               </>
             )}
+
           </Box>
         </Modal>
         
