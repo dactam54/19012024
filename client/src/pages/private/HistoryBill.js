@@ -110,6 +110,7 @@ const handleRender = (id) => {
     // console.log('modal',dataModal)
     // console.log('modal1',dataModal1?.user)
     data.map((item)=> {item.id === id && setDataModal(item.hoaDons)})
+    data.map((item)=> {item.id === id && setDataModal(item.hoaDons)})
     console.log('modal',dataModal)
     handleOpen();
   };
@@ -175,18 +176,14 @@ const fetchData = async () => {
       setData(filterDate);
     } else if (keySearch) {
       const filteredSearch = data.filter((item) => {
-
         if (item.hoaDons[0].hoaDonNhapId && !isNaN(item.hoaDons[0].hoaDonNhapId)) {
           if (parseInt(item.hoaDons[0].hoaDonNhapId) > 0) {
             return "Phiếu nhập".toLowerCase().includes(keySearch.toLowerCase());
           } 
-
         }else if(item.hoaDons[0].hoaDonXuatId && !isNaN(item.hoaDons[0].hoaDonXuatId)){
-
           if (parseInt(item.hoaDons[0].hoaDonXuatId) > 0) {
             return "Phiếu xuất".toLowerCase().includes(keySearch.toLowerCase());
           } 
-          
         } else {
           return item.maHoaDon.toLowerCase().includes(keySearch.toLowerCase()) || item.user.toLowerCase().includes(keySearch.toLowerCase()) || item.shipper.toLowerCase().includes(keySearch.toLowerCase());
         }
@@ -228,7 +225,7 @@ useEffect(() => {
           onChange={(e) => setKeySearch(e.target.value)}
         />
          <div>
-         <span>Lọc theo khoảng thời gian</span>
+         <div>Lọc theo khoảng thời gian</div>
         <div>
         <label htmlFor="startDate">Chọn ngày bắt đầu: </label>
         <input
@@ -375,6 +372,7 @@ useEffect(() => {
                           <TableRow>
                             <TableCell>STT</TableCell>
                             <TableCell>Ảnh</TableCell>
+                            <TableCell>Người giao</TableCell>
                             <TableCell>Tên sản phẩm </TableCell>
                             <TableCell>Mã sản phẩm</TableCell>
                             <TableCell>Số lượng</TableCell>
@@ -388,6 +386,7 @@ useEffect(() => {
                                     <TableCell>
                                     <img src={row.product.thumb} alt="ảnh sản phẩm" className="h-[50px] object-contain"/>
                                     </TableCell>
+                                    <TableCell>{row?.user}</TableCell>
                                     <TableCell>{row?.product?.name}</TableCell>
                                     <TableCell>{row?.productId}</TableCell>
                                     <TableCell>{row?.quantity}</TableCell>

@@ -178,3 +178,34 @@
         width: 100%;
     }
   }
+
+
+/* print */
+  @media print {
+    @page {
+      margin: 20mm 15mm 20mm 30mm;
+    }
+    .page {
+      margin: 40px;
+      border: initial;
+      border-radius: initial;
+      width: initial;
+      min-height: initial;
+      box-shadow: initial;
+      background: initial;
+      page-break-after: always;
+    }
+    .page .paper_footer {
+      position: static;
+      bottom: 0;
+    }
+  
+    .page .paper_sign {
+      page-break-inside: avoid;
+    }
+    .no_print,
+    .no_print * {
+      display: none !important;
+    }
+  }
+  

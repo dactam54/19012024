@@ -19,11 +19,15 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
+import {useReactToPrint} from 'react-to-print';
 import { Loading } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import {useRef  } from "react";
+import { Print} from '@mui/icons-material';
+import Xlsx from '../../utils/Xlsx'
 const style = {
   position: "absolute",
   top: "50%",
@@ -127,6 +131,7 @@ const Warehouse = () => {
   useEffect(() => {
     fetchDataModal()
   }, []);
+  const paperRef = useRef();
 
   const handleRender = (id) => {
     const filteredData = modalRaw.filter(item => item.productId === id);
@@ -154,7 +159,7 @@ const Warehouse = () => {
     const response = await apiGetProductsAdmin({ page: page });
     setLoading(false);
     const resData = response.productDatas;
-    if (keySearch) {
+    if (keySearch !== "") {
       setLoading(true);
       const filteredSearch = resData.rows.filter((item) => {
         return item.name.toLowerCase().includes(keySearch.toLowerCase()) || item.brand.toLowerCase().includes(keySearch.toLowerCase()) || item.catalog.toLowerCase().includes(keySearch.toLowerCase());
@@ -186,7 +191,45 @@ const Warehouse = () => {
     }));
   };
 
-  const navigate = useNavigate();
+
+  const handlePrint = useReactToPrint({
+    onBeforeGetContent: () => setLoading(true),
+    content: () => paperRef.current,
+    onAfterPrint: () => setLoading(false),
+    onPrintError: (err) => {
+       toast.error("Có lỗi xảy ra khi in phiếu");
+        console.log(err);
+    },
+});
+const paperRef1 = useRef();
+
+const handlePrint1 = useReactToPrint({
+  onBeforeGetContent: () => setLoading(true),
+  content: () => paperRef1.current,
+  onAfterPrint: () => setLoading(false),
+  onPrintError: (err) => {
+     toast.error("Có lỗi xảy ra khi in phiếu");
+      console.log(err);
+  },
+});
+  
+
+
+
+
+let handleExport = async () =>{
+//   let response1 = await apiGetProductsAdmin({
+//   type :'SUBJECT',
+//   limit :'',
+//   offset:'',
+//   keyword:''
+// })
+// if(response1 && response1.err === 0){
+//   await Xlsx.exportExcel(response1?.productDatas.rows,'San pham','list_san_pham')
+// }
+}
+
+
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -197,7 +240,9 @@ const Warehouse = () => {
         placeholder="Tìm kiếm nhãn hiệu"
         onChange={(e) => setKeySearch(e.target.value)}
       />
-      <div></div>
+      <div>
+        
+      </div>
       {loading ? (
         <Loading />
       ) : (
@@ -312,8 +357,9 @@ const Warehouse = () => {
               onClose={handleClose}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
+              
             >
-              <Box sx={style}>
+              <Box sx={style} ref={paperRef}>
                 <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
                  Thẻ kho
                 </h1>
@@ -389,15 +435,27 @@ const Warehouse = () => {
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleRowsPerPage}
                     ></TablePagination>
+
+          <button onClick={handlePrint} className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold" >
+          <Print />
+            Xuất PDF
+          </button>
                   </div>
                 </Paper>
               </>
             ) }
               </Box>
-
             </Modal>)
      } 
+     <button
+                type='button'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2'
+                 onClick={() => handleExport()}>
+                
+                <span>Xuất file </span>
+            </button>
     </div>
+    
   );
 };
 

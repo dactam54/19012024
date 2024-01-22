@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { apiGetAllTheKhos, apiPhieuKhoNhap, apiPhieuKhoXuat } from "../../apis";
 import { Box, Modal } from "@mui/material";
 import { useDispatch } from "react-redux";
@@ -18,12 +18,14 @@ import { Loading } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import {useReactToPrint} from 'react-to-print';
+import { toast } from "react-toastify";
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 1200,
+  width: 1000,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -110,6 +112,9 @@ const WarehouseCard = () => {
   //   }
   // };
 
+
+  const paperRef = useRef();
+  
   const handleRender = async (id) => {
     try {
       console.log("idmodal", id);
@@ -186,6 +191,15 @@ const WarehouseCard = () => {
     }));
   };
 
+  const handlePrint = useReactToPrint({
+    onBeforeGetContent: () => setLoading(true),
+    content: () => paperRef.current,
+    onAfterPrint: () => setLoading(false),
+    onPrintError: (err) => {
+       toast.error("Có lỗi xảy ra khi in phiếu");
+        console.log(err);
+    },
+});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -335,9 +349,12 @@ const WarehouseCard = () => {
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
+          className="page"
         >
-          <Box sx={style}>
-            <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
+
+          <Box sx={style}   ref={paperRef}>
+          <div>
+          <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
               Chi tiết phiếu
             </h1>
             <div>
@@ -352,11 +369,13 @@ const WarehouseCard = () => {
             <div>
               Mã phiếu : <span> {dataModal.maHoaDon}</span>
             </div>
+          </div>
+            
             {/* <div>Loại phiếu :({dataModal.hoaDons[0].hoaDonNhapId})</div> */}
 
             {dataModal.hoaDons && (
               <>
-                <Paper>
+                <Paper >
                   <TableContainer sx={{ maxHeight: 800 }}>
                     <Table stickyHeader>
                       <TableHead>
@@ -387,6 +406,7 @@ const WarehouseCard = () => {
                               </TableRow>
                             );
                           })}
+                          
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -400,13 +420,20 @@ const WarehouseCard = () => {
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleRowsPerPage}
                     ></TablePagination>
+                    <button onClick={handlePrint} className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold" >
+            Xuất PDF
+          </button>
                   </div>
+
+                  
                 </Paper>
               </>
             )}
           </Box>
         </Modal>
+        
       )}
+      
     </div>
   );
 };
