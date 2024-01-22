@@ -18,11 +18,11 @@ import { Loading } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import {useReactToPrint} from 'react-to-print';
+import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 // import XLSX from 'xlsx/xlsx.mjs';
-import Xlsx from '../../utils/Xlsx'
-import * as XLSX from 'xlsx/xlsx.mjs';
+import Xlsx from "../../utils/Xlsx";
+import * as XLSX from "xlsx/xlsx.mjs";
 
 const style = {
   position: "absolute",
@@ -37,7 +37,7 @@ const style = {
 };
 const columns = [
   { field: "id", name: "ID", width: 90 },
- 
+
   {
     field: "maHoaDon",
     name: "Mã chứng từ",
@@ -91,9 +91,6 @@ const WarehouseCard = () => {
     endDate: "",
   });
 
- 
-
- 
   const handleOpen = () => {
     setOpen(true);
   };
@@ -120,9 +117,8 @@ const WarehouseCard = () => {
   //   }
   // };
 
-
   const paperRef = useRef();
-  
+
   const handleRender = async (id) => {
     try {
       console.log("idmodal", id);
@@ -131,14 +127,18 @@ const WarehouseCard = () => {
         apiPhieuKhoNhap(id),
         apiPhieuKhoXuat(id),
       ]);
-      const dataTitle = (responsePhieuKhoNhap.hoaDons.map((item)=> typeof(item.hoaDonNhapId) !== Number   )) ? responsePhieuKhoNhap: responsePhieuKhoXuat;
+      const dataTitle = responsePhieuKhoNhap.hoaDons.map(
+        (item) => typeof item.hoaDonNhapId !== Number
+      )
+        ? responsePhieuKhoNhap
+        : responsePhieuKhoXuat;
       console.log("DataModal:", dataTitle);
       setDataModal(dataTitle);
       handleOpen();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
   const handleChangePage = (event, newpage) => {
     setPage(newpage);
   };
@@ -148,7 +148,7 @@ const WarehouseCard = () => {
     setPage(0);
   };
   const [keySearch, setKeySearch] = useState("");
-// console.log("keySearch", keySearch);
+  // console.log("keySearch", keySearch);
   const fetchData = async () => {
     setLoading(true);
     if (!dateRange.startDate || !dateRange.endDate) {
@@ -166,35 +166,24 @@ const WarehouseCard = () => {
     const response = await apiGetAllTheKhos({
       startDate: dateRange.startDate,
       endDate: dateRange.endDate,
+      keyword: keySearch,
     });
 
     if (response.length > 0) setData(response);
     setLoading(false);
-    console.log("response", response);
-
-    // if(keySearch){
-    //   setLoading(true);
-    //   const filterData = response.filter((item) => {
-    //     return item.maHoaDon.toLowerCase().includes(keySearch.toLowerCase());
-    //   })
-    //   console.log("filterData", filterData);
-    //   setLoading(false);
-    //   setData(filterData);
-      
-    // }
-
   };
 
-  let handleExcel = async () =>{
+  let handleExcel = async () => {
     let response1 = await apiGetAllTheKhos({
-    type :'SUBJECT',
-    limit :'',
-    offset:'',
-    keyword:''
-})
-if(response1 && response1.err === 0){
-    await Xlsx.exportExcel(response1,'Thẻ kho','Thẻ kho')
-}}
+      type: "SUBJECT",
+      limit: "",
+      offset: "",
+      keyword: "",
+    });
+    if (response1 && response1.err === 0) {
+      await Xlsx.exportExcel(response1, "Thẻ kho", "Thẻ kho");
+    }
+  };
   const handleStartDateChange = (e) => {
     setDateRange((prev) => ({
       ...prev,
@@ -214,10 +203,10 @@ if(response1 && response1.err === 0){
     content: () => paperRef.current,
     onAfterPrint: () => setLoading(false),
     onPrintError: (err) => {
-       toast.error("Có lỗi xảy ra khi in phiếu");
-        console.log(err);
+      toast.error("Có lỗi xảy ra khi in phiếu");
+      console.log(err);
     },
-});
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -231,20 +220,20 @@ if(response1 && response1.err === 0){
         startDate,
         endDate,
       });
-    } else {
-      fetchData({ startDate: dateRange.startDate, endDate: dateRange.endDate });
     }
-  }, [dateRange.startDate, dateRange.endDate]);
+
+    fetchData();
+  }, [dateRange.startDate, dateRange.endDate, keySearch]);
 
   return (
     <div style={{ textAlign: "center" }}>
       <h3 className="font-bold text-[30px] pb-2 ">Thông tin phiếu</h3>
       <input
-          type="text"
-          className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
-          placeholder="Nhập thông tin cần tìm kiếm"
-          onChange={(e) => setKeySearch(e.target.value)}
-        />
+        type="text"
+        className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
+        placeholder="Nhập thông tin cần tìm kiếm"
+        onChange={(e) => setKeySearch(e.target.value)}
+      />
       <span>Lọc theo khoảng thời gian</span>
       <div>
         <label htmlFor="startDate">Chọn ngày bắt đầu:</label>
@@ -358,12 +347,13 @@ if(response1 && response1.err === 0){
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleRowsPerPage}
           ></TablePagination>
-            <button
-                type='button'
-                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2'
-                 onClick={() => handleExcel}>
-                <span>Xuất file </span>
-            </button>
+          <button
+            type="button"
+            className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2"
+            onClick={() => handleExcel}
+          >
+            <span>Xuất file </span>
+          </button>
         </Paper>
       )}
 
@@ -375,31 +365,30 @@ if(response1 && response1.err === 0){
           aria-describedby="modal-modal-description"
           className="page"
         >
+          <Box sx={style} ref={paperRef}>
+            <div>
+              <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
+                Chi tiết phiếu
+              </h1>
+              <div>
+                Người giao : <span>{dataModal.shipper}</span>
+              </div>
+              <div>
+                Người nhận : <span>{dataModal.user}</span>
+              </div>
+              <div>
+                Ngày : <span> {formatLocalTime(dataModal.date)}</span>
+              </div>
+              <div>
+                Mã phiếu : <span> {dataModal.maHoaDon}</span>
+              </div>
+            </div>
 
-          <Box sx={style}   ref={paperRef}>
-          <div>
-          <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
-              Chi tiết phiếu
-            </h1>
-            <div>
-              Người giao : <span>{dataModal.shipper}</span>
-            </div>
-            <div>
-              Người nhận : <span>{dataModal.user}</span>
-            </div>
-            <div>
-              Ngày : <span> {formatLocalTime(dataModal.date)}</span>
-            </div>
-            <div>
-              Mã phiếu : <span> {dataModal.maHoaDon}</span>
-            </div>
-          </div>
-            
             {/* <div>Loại phiếu :({dataModal.hoaDons[0].hoaDonNhapId})</div> */}
 
             {dataModal.hoaDons && (
               <>
-                <Paper >
+                <Paper>
                   <TableContainer sx={{ maxHeight: 800 }}>
                     <Table stickyHeader>
                       <TableHead>
@@ -430,7 +419,6 @@ if(response1 && response1.err === 0){
                               </TableRow>
                             );
                           })}
-                          
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -444,21 +432,19 @@ if(response1 && response1.err === 0){
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleRowsPerPage}
                     ></TablePagination>
-                    <button onClick={handlePrint} className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold" >
-            Xuất PDF
-          </button>
+                    <button
+                      onClick={handlePrint}
+                      className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
+                    >
+                      Xuất PDF
+                    </button>
                   </div>
-
-                  
                 </Paper>
               </>
             )}
-
           </Box>
         </Modal>
-        
       )}
-      
     </div>
   );
 };

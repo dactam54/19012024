@@ -337,7 +337,7 @@ export const getExportProductsCard = async (req, res) => {
 
 export const getAllTheKhos = async (req, res) => {
   try {
-    const response = await services.getAllTheKhos(req.query);
+    const response = await services.getAllTheKhos(req.body);
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);

@@ -936,18 +936,20 @@ export const getExportProductsCard = async (id) => {
 //8
 export const getAllTheKhos = async (query, mode = "desc") => {
   try {
+    const { keyword, startDate, endDate } = query;
+
     // Xử lý giá trị mặc định cho startDate và endDate
-    const startDate = query?.startDate
+    const _startDate = query?.startDate
       ? moment(query.startDate)
       : moment().startOf("day");
-    const endDate = query?.endDate
+    const _endDate = query?.endDate
       ? moment(query.endDate)
       : moment().endOf("day");
 
-    const sd = startDate.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-    const ed = endDate.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+    const sd = _startDate.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+    const ed = _endDate.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
 
-    console.log(sd, ed);
+    console.log(sd, ed, keyword);
 
     const data = await prisma.theKho.findMany({
       include: {
@@ -981,6 +983,20 @@ export const getAllTheKhos = async (query, mode = "desc") => {
             },
           },
         ],
+        product: {
+          OR: [
+            {
+              name: {
+                contains: keyword || "",
+              },
+            },
+            {
+              brand: {
+                contains: keyword || "",
+              },
+            },
+          ],
+        },
       },
       orderBy: {
         date: mode, // Sắp xếp theo date theo chiều giảm dần
