@@ -63,12 +63,14 @@ const ManageImport = () => {
       hoaDons: selectedProducts?.map((p) => ({
         productId: p.productId,
         quantity: parseInt(p.quantity),
+        note :p.note
       })),
       // shipper: formData.shipper,
       // user: formData.user,
       // date: formData.date,
       ...formData,
       date: new Date(formData?.date),
+      note :formData.note
     });
 
     if (response?.id) {
@@ -261,6 +263,18 @@ const ManageImport = () => {
               />
             </div>
             <div>
+            <label htmlFor="note">Diễn giải :</label>
+              <textarea
+                type="text"
+                id="note"
+                name="note"
+                value={formData.note}
+                onChange={handleInputChange}
+              />
+            </div>
+
+
+            <div>
               <table className="table-auto w-full mt-4">
                 <thead>
                   <tr className="border-b border-t">
@@ -275,6 +289,9 @@ const ManageImport = () => {
                     </td>
                     <td className="p-2 font-bold border border-solid border-gray-300 text-center">
                       Chọn Số lượng
+                    </td>
+                    <td className="p-2 font-bold border border-solid border-gray-300 text-center">
+                      Diễn giải
                     </td>
                   </tr>
                 </thead>
@@ -329,6 +346,27 @@ const ManageImport = () => {
                           }}
                         />
                       </td>
+
+                      <td
+                        className={`p-2 border border-solid border-gray-300 ${
+                          index % 2 === 0 ? "" : "bg-gray-100"
+                        } m-auto `}
+                      >
+                        <TextField
+                          type="text"
+                          required
+                          fullWidth
+                          // defaultValue={item.quantity}
+                          // inputProps={{ min: 0, max: item.quantity }}
+                          onChange={(e) => {
+                            const newSelectedProducts = [...selectedProducts];
+                            newSelectedProducts[index].note =
+                              e.target.value;
+                            setSelectedProducts(newSelectedProducts);
+                          }}
+                        />
+                      </td>
+
                     </tr>
                   ))}
                 </tbody>
