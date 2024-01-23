@@ -539,25 +539,17 @@ export const importManyProducts = async (data, userId) => {
           createMany: {
             data: data?.hoaDons?.map((i) => ({
               maHoaDon: getCode(),
-              // customer: {
-              //     connect: {
-              //         id: Number(userId)
-              //     }
-              // },
               customerId: Number(userId),
-              // product: {
-              //     connect: {
-              //         id: i.productId
-              //     }
-              // },
               productId: i.productId,
               quantity: i.quantity,
+              note: i?.note || "",
             })),
           },
         },
         shipper: data?.shipper,
         user: data?.user,
         date: data?.date,
+        note: data?.note || "",
       },
       include: {
         hoaDons: {
@@ -633,12 +625,14 @@ export const exportManyProducts = async (data, userId) => {
               // },
               productId: i.productId,
               quantity: i.quantity,
+              note: i?.note || "",
             })),
           },
         },
         shipper: data?.shipper,
         user: data?.user,
         date: data?.date,
+        note: data?.note || "",
       },
       include: {
         hoaDons: {

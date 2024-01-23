@@ -92,6 +92,7 @@ model HoaDon {
   hoaDonNhap HoaDonNhap? @relation(fields: [hoaDonNhapId], references: [id])
 
   theKhos TheKho[]
+  note String?
 
   quantity Int
 
@@ -110,6 +111,7 @@ model HoaDonNhap {
   shipper String?
     // ngày nhập
   date DateTime? 
+  note String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -133,6 +135,7 @@ model HoaDonXuat {
   shipper String?
     // ngày nhập
   date DateTime? 
+  note String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
