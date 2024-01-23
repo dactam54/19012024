@@ -12,5 +12,6 @@ export { default as PDF } from "./PDF";
 export { default as WarehouseCard } from "./WarehouseCard";
 export { default as HistoryBill } from "./HistoryBill";
 export { default as Warehouse } from "./Warehouse";
+export { default as Import } from "./Import";
 
 // export { default as ProductAdmin } from './ProductAdmin'

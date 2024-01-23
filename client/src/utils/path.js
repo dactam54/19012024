@@ -18,6 +18,7 @@ const path = {
     WAREHOUSE_CARD: 'the-kho',
     HISTORY_BILL: 'lich-su-phieu',
     PDF: 'bao-cao',
+    IMPORT : 'import',
 }
 
 export default path

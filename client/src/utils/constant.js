@@ -50,6 +50,11 @@ export const adminSidebar = [
     icons: <RiBillLine size={22} />,
     path: path.SYSTEM + "/" + path.HISTORY_BILL,
   },
+  {
+    name: "Import",
+    icons: <RiBillLine size={22} />,
+    path: path.SYSTEM + "/" + path.IMPORT,
+  },
   // {
   //   name: "Lịch sử nhập",
   //   icons: <RiBillLine size={22} />,

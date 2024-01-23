@@ -16,6 +16,7 @@ import {
   HistoryBill,
   Warehouse,
   PDF,
+  Import,
 } from "./pages/private";
 
 import { ToastContainer } from "react-toastify";
@@ -43,6 +44,7 @@ function App() {
           <Route path={path.MANAGE_EXPORT} element={<ManageExport />} />
           <Route path={path.WAREHOUSE_CARD} element={<WarehouseCard />} />
           <Route path={path.HISTORY_BILL} element={<HistoryBill />} />
+          <Route path={path.IMPORT} element={<Import />} />
 
           <Route path={"*"} element={<Statistics />} />
           {/* <Route path={path.PRODUCT_CARD_STORE} element={<ProductCardStore />} /> */}

@@ -40,6 +40,7 @@ const ManageImport = () => {
     const response = await apiGetProductsAdmin({ page: page });
     setLoading(false);
     if (response.err === 0) setProducts(response.productDatas);
+    console.log('products123',products)
   }, [ page]);
 
   const [formData, setFormData] = useState({
