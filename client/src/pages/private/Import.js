@@ -20,6 +20,7 @@ const Import = () => {
 console.log('selectedItems',selectedItems)
 console.log('selectedValue',selectedValue)
 
+
   const fetchProducts = React.useCallback(async () => {
     setLoading(true);
     const response = await apiGetProductsAdmin({ page: page });
@@ -42,7 +43,7 @@ console.log('selectedValue',selectedValue)
   useEffect(() => {
     
     if (selectedValue) {
-      const existingItemIndex = selectedItems.findIndex(item => item.value === selectedValue);
+      const existingItemIndex = selectedItems.findIndex(item => item.value === selectedValue );
       if (existingItemIndex !== -1) {
         setSelectedValue('');
         quantityInputRef.current.focus();
@@ -52,7 +53,7 @@ console.log('selectedValue',selectedValue)
           {
             value: selectedValue,
             quantity: 1,
-            productId: selectedValue
+           
           }
         ]);
         setSelectedValue('');
@@ -83,7 +84,7 @@ console.log('selectedValue',selectedValue)
   const handleImport = async () => {
     const response = await apiImportManyProducts({
       hoaDons: selectedItems?.map((item) => ({
-        productId: item.name, 
+        productId: item.value, 
         quantity: parseInt(item.quantity)
       })),
      
@@ -100,7 +101,7 @@ console.log('selectedValue',selectedValue)
       <select onChange={handleDropdownChange} value={selectedValue}>
         <option value="">Select an option</option>
         {data?.rows?.map(item => (
-          <option key={item.id} value={item.name}>
+          <option key={item.id} value={item.id}>
             {item?.name}
           </option>
         ))}
