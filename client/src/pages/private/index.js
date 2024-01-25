@@ -13,5 +13,6 @@ export { default as WarehouseCard } from "./WarehouseCard";
 export { default as HistoryBill } from "./HistoryBill";
 export { default as Warehouse } from "./Warehouse";
 export { default as Import } from "./Import";
+export { default as Export } from "./Export";
 
 // export { default as ProductAdmin } from './ProductAdmin'

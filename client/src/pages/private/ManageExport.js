@@ -186,7 +186,7 @@ const[loading,setLoading]=useState(false)
           color="primary"
           disabled={!selectedProducts?.length}
           onClick={async () => {
-            setOpenInsert(true);
+            setOpenInsert(true);  
           }}
         >
           Phiếu xuất

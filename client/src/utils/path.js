@@ -19,6 +19,7 @@ const path = {
     HISTORY_BILL: 'lich-su-phieu',
     PDF: 'bao-cao',
     IMPORT : 'import',
+    EXPORT :'export'
 }
 
 export default path

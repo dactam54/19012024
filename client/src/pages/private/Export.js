@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { apiGetProductsAdmin, apiImportManyProducts } from "../../apis";
+import { apiGetProductsAdmin, apiExportManyProducts } from "../../apis";
 import Loading from "../../components/Loading";
 import { toast } from "react-toastify";
 import { MdDelete } from "react-icons/md";
@@ -31,7 +31,7 @@ const flexContainerStyle = {
   alignItems: "center", 
 };
 
-const Import = () => {
+const Export = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [selectedValue, setSelectedValue] = useState("");
@@ -93,7 +93,7 @@ const Import = () => {
     setSelectedItems((prevItems) => prevItems.filter((_, i) => i !== index));
   };
   const handleImport = async () => {
-    const response = await apiImportManyProducts({
+    const response = await apiExportManyProducts({
       hoaDons: selectedItems?.map((item) => ({
         productId: item.value,
         quantity: parseInt(item.quantity),
@@ -265,10 +265,10 @@ const Import = () => {
               // style={{opacity: selectedItems.length === 0 ? 0.5 : 1, }}
               // disabled={selectedItems.length === 0}
             >
-              <span>Import</span>
+              <span>Export</span>
             </button>
     </div>
   );
 };
 
-export default Import;
+export default Export;

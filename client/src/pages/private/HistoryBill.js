@@ -216,7 +216,7 @@ useEffect(() => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h3 className="font-bold text-[30px] pb-2 ">Lịch sử</h3>
+      <h3 className="font-bold text-[30px] pb-2 ">Lịch sử phiếu nhập / xuất</h3>
       
       <input
           type="text"

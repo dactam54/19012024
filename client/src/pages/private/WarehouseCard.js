@@ -227,7 +227,7 @@ const WarehouseCard = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h3 className="font-bold text-[30px] pb-2 ">Thông tin phiếu</h3>
+      <h3 className="font-bold text-[30px] pb-2 ">Tra cứu </h3>
       <input
         type="text"
         className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"

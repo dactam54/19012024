@@ -116,12 +116,12 @@ const InsertProduct = ({
             nameKey="catalog"
             setValue={setPayload}
           />
-          <InputField
+          {/* <InputField
             preValue={"Số lượng: "}
             value={isImport ? payload.plus : payload.quantity}
             nameKey={isImport ? "plus" : "quantity"}
             setValue={setPayload}
-          />
+          /> */}
         </div>
 
         {!isImport && (

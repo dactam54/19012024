@@ -29,32 +29,37 @@ export const adminSidebar = [
     icons: <FaProductHunt size={22} />,
     path: path.SYSTEM + "/" + path.MANAGE_PRODUCT,
   },
-  {
-    name: "Tạo phiếu nhập ",
-    icons: <FaProductHunt size={22} />,
-    path: path.SYSTEM + "/" + path.MANAGE_IMPORT,
-  },
-  {
-    name: "Tạo phiếu xuất ",
-    icons: <FaProductHunt size={22} />,
-    path: path.SYSTEM + "/" + path.MANAGE_EXPORT,
-  },
-  {
-    name: "Thẻ kho",
-    icons: <RiBillLine size={22} />,
-    path: path.SYSTEM + "/" + path.WAREHOUSE_CARD,
-  },
+  // {
+  //   name: "Tạo phiếu nhập ",
+  //   icons: <FaProductHunt size={22} />,
+  //   path: path.SYSTEM + "/" + path.MANAGE_IMPORT,
+  // },
+  // {
+  //   name: "Tạo phiếu xuất ",
+  //   icons: <FaProductHunt size={22} />,
+  //   path: path.SYSTEM + "/" + path.MANAGE_EXPORT,
+  // },
+  // {
+  //   name: "Thẻ kho",
+  //   icons: <RiBillLine size={22} />,
+  //   path: path.SYSTEM + "/" + path.WAREHOUSE_CARD,
+  // },
 
-  {
-    name: "Lịch sử Nhập/Xuất",
-    icons: <RiBillLine size={22} />,
-    path: path.SYSTEM + "/" + path.HISTORY_BILL,
-  },
-  {
-    name: "Import",
-    icons: <RiBillLine size={22} />,
-    path: path.SYSTEM + "/" + path.IMPORT,
-  },
+  // {
+  //   name: "Lịch sử Nhập/Xuất",
+  //   icons: <RiBillLine size={22} />,
+  //   path: path.SYSTEM + "/" + path.HISTORY_BILL,
+  // },
+  // {
+  //   name: "Import",
+  //   icons: <RiBillLine size={22} />,
+  //   path: path.SYSTEM + "/" + path.IMPORT,
+  // },
+  // {
+  //   name: "Export",
+  //   icons: <RiBillLine size={22} />,
+  //   path: path.SYSTEM + "/" + path.EXPORT,
+  // },
   // {
   //   name: "Lịch sử nhập",
   //   icons: <RiBillLine size={22} />,

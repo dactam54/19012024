@@ -132,6 +132,7 @@ const Warehouse = () => {
     fetchDataModal()
   }, []);
   const paperRef = useRef();
+  const navigate = useNavigate();
 
   const handleRender = (id) => {
     const filteredData = modalRaw.filter(item => item.productId === id);
@@ -214,34 +215,6 @@ const handlePrint1 = useReactToPrint({
   },
 });
 
-// const handlePrint1 = useReactToPrint({
-//   onBeforeGetContent: () => setLoading(true),
-//   content: () => paperRef1.current,
-//   onAfterPrint: () => setLoading(false),
-//   onPrintError: (err) => {
-//      toast.error("Có lỗi xảy ra khi in phiếu");
-//       console.log(err);
-//   },
-// });
-  
-
-
-
-
-let handleExport = async () =>{
-//   let response1 = await apiGetProductsAdmin({
-//   type :'SUBJECT',
-//   limit :'',
-//   offset:'',
-//   keyword:''
-// })
-// if(response1 && response1.err === 0){
-//   await Xlsx.exportExcel(response1?.productDatas.rows,'San pham','list_san_pham')
-// }
-}
-
-
-
   return (
     <div style={{ textAlign: "center" }}>
       <h3 className="font-bold text-[30px] pb-2 ">Thông tin kho</h3>
@@ -251,16 +224,44 @@ let handleExport = async () =>{
         className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
         placeholder="Tìm kiếm nhãn hiệu"
         onChange={(e) => setKeySearch(e.target.value)}
-        // style={{ width: "80%" }}
-      />
-      <button
+      />     
+      </div> 
+      <div style={{display:'flex'}}>
+     
+
+            <button
                 type='button'
-                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3'
+                 onClick={() =>  navigate("/he-thong/import")}>
+                <span>Tạo phiếu nhập </span>
+            </button>
+            <button
+                type='button'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3'
+                 onClick={() =>  navigate("/he-thong/export")}>
+                <span>Tạo phiếu xuất </span>
+            </button>
+
+            <button
+                type='button'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3'
+                 onClick={() =>  navigate("/he-thong/lich-su-phieu")}>
+                <span>Lịch sử phiếu </span>
+            </button>
+
+            <button
+                type='button'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3'
+                 onClick={() =>  navigate("/he-thong/the-kho")}>
+                <span>Tra cứu</span>
+            </button>
+            <button
+                type='button'
+                className='py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3'
                  onClick={() => handlePrint1()}>
                 <span>Xuất file </span>
             </button>
       </div>
-      
       <div>
         
       </div>
@@ -283,25 +284,6 @@ let handleExport = async () =>{
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* {data ? data.rows?.slice(page * rowPerPage, page * rowPerPage + rowPerPage).map((row, index) => {
-                      return (
-                        <TableRow hover key={row.id}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell><img src={row.thumb} alt="ảnh sản phẩm" className="h-[50px] object-contain"/></TableCell>
-                          <TableCell>{row?.name}</TableCell>
-                          <TableCell>{row?.brand}</TableCell>
-                          <TableCell>{row?.catalog}</TableCell>
-                          <TableCell>{row?.quantity}</TableCell>
-                          <button
-                             onClick={() => handleRender(row.id)}
-                            className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
-                          >
-                            Xem chi tiết
-                          </button>
-                        </TableRow>
-                      );
-                    }) :<p>Không có dữ liệu</p>}  */}
-
                 {data1
                   ? data1
                       ?.slice(page * rowPerPage, page * rowPerPage + rowPerPage)
