@@ -111,7 +111,7 @@ const handleRender = (id) => {
     // console.log('modal1',dataModal1?.user)
     data.map((item)=> {item.id === id && setDataModal(item.hoaDons)})
     data.map((item)=> {item.id === id && setDataModal(item.hoaDons)})
-    console.log('modal',dataModal)
+    console.log('modal123',dataModal)
     handleOpen();
   };
   
@@ -386,7 +386,7 @@ useEffect(() => {
                                     <TableCell>
                                     <img src={row.product.thumb} alt="ảnh sản phẩm" className="h-[50px] object-contain"/>
                                     </TableCell>
-                                    <TableCell>{row?.user}</TableCell>
+                                    <TableCell>{row?.hoaDonNhap?.shipper ||row?.hoaDonXuat?.shipper }</TableCell>
                                     <TableCell>{row?.product?.name}</TableCell>
                                     <TableCell>{row?.productId}</TableCell>
                                     <TableCell>{row?.quantity}</TableCell>

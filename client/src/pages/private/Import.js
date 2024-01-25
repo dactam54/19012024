@@ -3,23 +3,37 @@ import { apiGetProductsAdmin, apiImportManyProducts } from "../../apis";
 import Loading from "../../components/Loading";
 import { toast } from "react-toastify";
 import { MdDelete } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
+
 const tableCellStyle = {
   border: "1px solid #ddd",
   padding: "8px",
   textAlign: "left",
 };
 
+
+const tableCellStyle1 = {
+  border: "1px solid black",
+  padding: "8px",
+  textAlign: "left",
+  position: 'sticky',
+  top: "-1px", 
+  zIndex: 100,
+  backgroundColor: "#ddd"
+};
+
 const labelStyle = {
   display: "block",
-  margin: "10px 0", 
+  margin: "10px 0",
   fontWeight: "bold",
 };
 
 const inputStyle = {
-  width: "300px", 
+  width: "300px",
   padding: "8px",
-   margin: "20px 20px 10px 20px",
- 
+  margin: "20px 20px 10px 20px",
+
   boxSizing: "border-box",
   border: "1px solid #999",
   borderRadius: "10px",
@@ -27,8 +41,8 @@ const inputStyle = {
 
 const flexContainerStyle = {
   display: "flex",
-  flexDirection: "row", 
-  alignItems: "center", 
+  flexDirection: "row",
+  alignItems: "center",
 };
 
 const Import = () => {
@@ -38,7 +52,6 @@ const Import = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [searchTerm, setSearchTerm] = useState("");
   const quantityInputRef = useRef(null);
   console.log("selectedItems", selectedItems);
   console.log("selectedValue", selectedValue);
@@ -59,6 +72,7 @@ const Import = () => {
     setSelectedValue(value);
   };
 
+  const navigate = useNavigate();
   useEffect(() => {
     if (selectedValue) {
       const existingItemIndex = selectedItems.findIndex(
@@ -110,10 +124,11 @@ const Import = () => {
         shipper: "",
         user: "",
         date: "",
-        note :""
+        note: "",
       });
       setSelectedItems([]);
       fetchProducts();
+      navigate("/he-thong/lich-su-phieu");
     }
   };
 
@@ -139,15 +154,37 @@ const Import = () => {
     date: "",
     note: "",
   });
+  // const isImportButtonDisabled =
+  //   formData.shipper.trim() === "" ||
+  //   formData.user.trim() === "" ||
+  //   formData.date.trim() === "" ||
+  //   selectedItems.length === 0;
 
-
+    const isImportButtonDisabled =
+  !(formData.shipper.trim() && 
+    formData.user.trim() && 
+    formData.date.trim() && 
+    selectedItems.length > 0 && 
+    selectedItems.every(item => item.value.trim() && item.quantity > 0)
+  );
   const buttonClass = `py-2 px-4 rounded-md font-semibold flex items-center justify-center gap-2 ${
-    selectedItems.length === 0 ? "bg-gray-400 text-gray-600" : "bg-green-600 text-white"
+    isImportButtonDisabled
+      ? "bg-gray-400 text-gray-600"
+      : "bg-green-600 text-white"
   }`;
   return (
-    <div>
+    <div >
+      <h3
+        style={{ textAlign: "center" }}
+        className="font-bold text-[30px] pb-2"
+      >
+        Phiếu nhập
+      </h3>
+
       <div style={flexContainerStyle}>
-        <label htmlFor="shipper" style={labelStyle}>Người giao :</label>
+        <label htmlFor="shipper" style={labelStyle}>
+          Người giao :
+        </label>
         <input
           type="text"
           id="shipper"
@@ -159,7 +196,9 @@ const Import = () => {
       </div>
 
       <div style={flexContainerStyle}>
-        <label htmlFor="user" style={labelStyle}>Người nhận :</label>
+        <label htmlFor="user" style={labelStyle}>
+          Người nhận :
+        </label>
         <input
           type="text"
           id="user"
@@ -171,7 +210,9 @@ const Import = () => {
       </div>
 
       <div style={flexContainerStyle}>
-        <label htmlFor="date" style={labelStyle}>Ngày Nhập:</label>
+        <label htmlFor="date" style={labelStyle}>
+          Ngày Nhập:
+        </label>
         <input
           type="datetime-local"
           id="date"
@@ -183,7 +224,9 @@ const Import = () => {
       </div>
 
       <div style={flexContainerStyle}>
-        <label htmlFor="note" style={labelStyle}>Diễn giải :</label>
+        <label htmlFor="note" style={labelStyle}>
+          Diễn giải :
+        </label>
         <textarea
           type="text"
           id="note"
@@ -194,7 +237,11 @@ const Import = () => {
         />
       </div>
 
-      <select onChange={handleDropdownChange} value={selectedValue} style={{border:'1px solid black', borderRadius:'10px'}}>
+      <select
+        onChange={handleDropdownChange}
+        value={selectedValue}
+        style={{ border: "1px solid black", borderRadius: "10px" }}
+      >
         <option value="">Chọn hàng hóa</option>
         {data?.rows?.map((item) => (
           <option key={item.id} value={item.id}>
@@ -204,16 +251,15 @@ const Import = () => {
       </select>
       {selectedValue && <p>Selected Value: {selectedValue}</p>}
 
-     
-
       {selectedItems.length > 0 && (
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <div style={{ overflowY: "auto", maxHeight: "300px", border:"1px solid black", marginTop:"20px"  }}>
+        <table style={{ borderCollapse: "collapse", width: "100%",}}>
           <thead>
             <tr>
-              <th style={tableCellStyle}>Item</th>
-              <th style={tableCellStyle}>Quantity</th>
-              <th style={tableCellStyle}>Note</th>
-              <th style={tableCellStyle}>Actions</th>
+              <th style={tableCellStyle1 }>ID</th>
+              <th style={{ ...tableCellStyle1, width:"100px"}}>Số lượng</th>
+              <th style={tableCellStyle1}>Diễn giải</th>
+              <th style={{ ...tableCellStyle1, width:"100px"}}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -232,9 +278,8 @@ const Import = () => {
                     onChange={(e) =>
                       handleQuantityChange(parseInt(e.target.value), index)
                     }
-                    
                     min={1}
-                    style={{ width: "50px" }}
+                    style={{ width: "70px", padding: "2px"}}
                   />
                 </td>
                 <td style={tableCellStyle}>
@@ -242,33 +287,36 @@ const Import = () => {
                     type="text"
                     value={item.note}
                     onChange={(e) => handleNoteChange(e.target.value, index)}
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", padding: "2px"}}
                   />
                 </td>
-                <td style={tableCellStyle}>
+                <td style={{ ...tableCellStyle, textAlign: 'center' }}>
                   <button onClick={() => handleDeleteItem(index)}>
-                  <MdDelete size={18} />
+                    <MdDelete size={18} />
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        </div>
+       
       )}
-      <button
-              type="button"
-              onClick={handleImport}
-              disabled={selectedItems.length === 0}
-             className={buttonClass}
-
-              // className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2"
-              // style={{opacity: selectedItems.length === 0 ? 0.5 : 1, }}
-              // disabled={selectedItems.length === 0}
-            >
-              <span>Import</span>
-            </button>
+      <div className="flex justify-center py-4">
+        <Button
+          onClick={handleImport}
+          disabled={isImportButtonDisabled}
+          className={buttonClass}
+          style={{ marginTop: "20px" }}
+          variant="contained"
+          color="success"
+        >
+          <span>Nhập hàng</span>
+        </Button>
+      </div>
     </div>
   );
 };
 
 export default Import;
+
