@@ -178,7 +178,7 @@ const Export = () => {
         style={{ textAlign: "center" }}
         className="font-bold text-[30px] pb-2"
       >
-        Phiếu nhập
+        Phiếu xuất
       </h3>
 
       <div style={flexContainerStyle}>
