@@ -683,7 +683,7 @@ export const exportManyProducts = async (data, userId) => {
   }
 };
 
-// get all phieu nhap 
+// get all phieu nhap
 //3
 export const getImportProductDetailsAll = async () => {
   try {
@@ -692,7 +692,7 @@ export const getImportProductDetailsAll = async () => {
         hoaDons: {
           include: {
             product: true,
-            hoaDonNhap: true
+            hoaDonNhap: true,
           },
           orderBy: {
             createdAt: "desc",
@@ -714,7 +714,7 @@ export const getExportProductDetailsAll = async () => {
         hoaDons: {
           include: {
             product: true,
-            hoaDonXuat: true
+            hoaDonXuat: true,
           },
           orderBy: {
             createdAt: "desc",
@@ -742,6 +742,13 @@ export const getImportProductDetails = async (id) => {
           },
           {
             id: Number(id),
+          },
+          {
+            hoaDons: {
+              some: {
+                id: Number(id),
+              },
+            },
           },
         ],
       },
@@ -784,6 +791,13 @@ export const getExportProductDetails = async (id) => {
           },
           {
             id: Number(id),
+          },
+          {
+            hoaDons: {
+              some: {
+                id: Number(id),
+              },
+            },
           },
         ],
       },

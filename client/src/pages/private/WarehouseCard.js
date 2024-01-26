@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import { Loading } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
-import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
+import { Link, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 // import XLSX from 'xlsx/xlsx.mjs';
@@ -121,19 +121,19 @@ const WarehouseCard = () => {
 
   const handleRender = async (id) => {
     try {
-      console.log("idmodal", id);
-
       const [responsePhieuKhoNhap, responsePhieuKhoXuat] = await Promise.all([
         apiPhieuKhoNhap(id),
         apiPhieuKhoXuat(id),
       ]);
-      const dataTitle = responsePhieuKhoNhap.hoaDons.map(
-        (item) => typeof item.hoaDonNhapId !== Number
-      )
-        ? responsePhieuKhoNhap
-        : responsePhieuKhoXuat;
-      console.log("DataModal:", dataTitle);
-      setDataModal(dataTitle);
+
+      const data =
+        JSON.stringify(responsePhieuKhoNhap) === "{}"
+          ? responsePhieuKhoXuat
+          : responsePhieuKhoNhap;
+
+      // console.log(data);
+
+      setDataModal(data);
       handleOpen();
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -225,6 +225,17 @@ const WarehouseCard = () => {
     fetchData();
   }, [dateRange.startDate, dateRange.endDate, keySearch]);
 
+  const [params] = useSearchParams();
+  const hoaDonId = params.get("hoaDonId");
+
+  React.useEffect(() => {
+    (async () => {
+      if (!hoaDonId) return;
+      await handleRender(hoaDonId);
+      handleOpen();
+    })();
+  }, [hoaDonId]);
+
   return (
     <div style={{ textAlign: "center" }}>
       <h3 className="font-bold text-[30px] pb-2 ">Tra cứu </h3>
@@ -254,29 +265,6 @@ const WarehouseCard = () => {
           onChange={handleEndDateChange}
         />
       </div>
-
-      {/* <div style={{display: 'flex', flexDirection:'row', marginRight:'20px'}}>
-
-      <button
-              type="button"
-              onClick={() => navigate("/he-thong/quan-ly-nhap")}
-              className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2">
-              <span>Tạo phiếu nhập</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/he-thong/quan-ly-xuat")}
-              className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2">
-              <span>Tạo phiếu xuất</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/he-thong/quan-ly-xuat")}
-              className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2">
-              <span>Quản lý hàng hóa</span>
-            </button>
-      </div>
-       */}
 
       {loading ? (
         <Loading />
