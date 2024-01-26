@@ -368,17 +368,20 @@ const Warehouse = () => {
         >
           <Box sx={style} ref={paperRef}>
             <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
-              Thẻ kho
+              Thông tin hàng hóa
             </h1>
             {/* <div>Người lập thẻ :</div> */}
             <div>
               Tên sản phẩm :<span>{dataModal[0]?.product?.name}</span>
             </div>
             <div>
+            Mã sản phẩm :
+            <span>{dataModal[0]?.product?.id}</span>
+            </div>
+            <div>
               Ngày :<span>{formatLocalTime(new Date().toISOString())}</span>
             </div>
-            <div>Mã phiếu :{/* <span> {dataModal.maHoaDon}</span> */}</div>
-            {/* <div>Loại phiếu :({dataModal.hoaDons[0].hoaDonNhapId})</div> */}
+          
 
             {dataModal && (
               <>
@@ -549,6 +552,65 @@ const Warehouse = () => {
                               </TableRow>
                             );
                           })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+
+                  <TableContainer>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số tồn đầu kì:
+                          </TableCell>
+                          <TableCell>
+                          {dataModal[0]?.hoaDon.oldQuantity}
+                          {/* {data?.reduce((acc, cur) => acc + cur.hoaDon.newQuantity, 0)} */}
+                          </TableCell>
+                        </TableRow>
+
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số nhập trong kì:
+                          </TableCell>
+                          <TableCell>
+                          {/* {data?.reduce((acc, cur) => acc + cur.hoaDon.quantity, 0)} */}
+                          {dataModal?.reduce((acc, cur) => {
+                              if (cur.hoaDon && cur.hoaDon.hoaDonNhapId) {
+                               return acc + cur.hoaDon.quantity;
+                           }
+                              return acc;
+                          }, 0)}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số nhập trong kì:
+                          </TableCell>
+                          <TableCell>
+                          {/* {data?.reduce((acc, cur) => acc + cur.hoaDon.quantity, 0)} */}
+                          {dataModal?.reduce((acc, cur) => {
+                              if (cur.hoaDon && cur.hoaDon.hoaDonXuatId) {
+                               return acc + cur.hoaDon.quantity;
+                           }
+                              return acc;
+                          }, 0)}
+                          </TableCell>
+                        </TableRow>
+                        
+
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số tồn cuối kì:
+                          </TableCell>
+                          <TableCell>
+                          {dataModal[dataModal.length - 1 ]?.hoaDon.newQuantity}
+                          </TableCell>
+                        </TableRow>
                       </TableBody>
                     </Table>
                   </TableContainer>
