@@ -304,6 +304,13 @@ const WarehouseCard = () => {
                   ))}
                 </TableRow>
               </TableHead>
+
+
+                {
+                keySearch && <div>
+                Tống số tồn : {data?.reduce((acc, cur) => acc + cur.hoaDon.newQuantity, 0)}
+                </div>
+              }  
               <TableBody>
                 {data &&
                   data
