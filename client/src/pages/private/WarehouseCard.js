@@ -51,11 +51,11 @@ const columns = [
     width: 150,
     editable: true,
   },
-  { 
-    field: "id", 
-    name: "Tên sản phẩm", 
-    width: 200
-   },
+  {
+    field: "id",
+    name: "Tên sản phẩm",
+    width: 200,
+  },
   {
     field: "oldProduct",
     name: "Tồn ĐK",
@@ -252,16 +252,32 @@ const WarehouseCard = () => {
     })();
   }, [hoaDonId]);
 
+
+  const checkValue = (arr) => {
+    if (arr.length <= 1) {
+      return true;
+  }
+  const firstName = arr[0].product.name;
+  for (let i = 1; i < arr.length; i++) {
+      if (arr[i].product.name !== firstName) {
+          return false;
+      }
+  }
+  return true;
+}
+  
   return (
     <div style={{ textAlign: "center" }}>
-
-    <div onClick={()=> navigate("/he-thong/thong-tin-kho")} style={{cursor:"pointer"}}>
-    <GrLinkPrevious  size={25}/>
-    </div>
+      <div
+        onClick={() => navigate("/he-thong/thong-tin-kho")}
+        style={{ cursor: "pointer" }}
+      >
+        <GrLinkPrevious size={25} />
+      </div>
       <h3 className="font-bold text-[30px] pb-2 ">Tra cứu thông tin </h3>
       <input
         type="text"
-        className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
+        className="bg-white text-gray-700 rounded-md py-2 px-4 w-full border-2 border-gray-300 focus:outline-none focus:border-green-600"
         placeholder="Nhập thông tin cần tìm kiếm"
         onChange={(e) => setKeySearch(e.target.value)}
       />
@@ -305,12 +321,7 @@ const WarehouseCard = () => {
                 </TableRow>
               </TableHead>
 
-
-                {
-                keySearch && <div>
-                Tống số tồn : {data?.reduce((acc, cur) => acc + cur.hoaDon.newQuantity, 0)}
-                </div>
-              }  
+              
               <TableBody>
                 {data &&
                   data
@@ -318,22 +329,21 @@ const WarehouseCard = () => {
                     .map((row, index) => {
                       return (
                         <TableRow hover key={row.id}>
-                          <TableCell >{index + 1}</TableCell>
-                          <TableCell >{`CT-${row.hoaDonId}`}</TableCell>
-                          <TableCell >
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{`CT-${row.hoaDonId}`}</TableCell>
+                          <TableCell>
                             <img
                               src={row.product.thumb}
                               alt="ảnh sản phẩm"
                               className="h-[50px] object-contain"
                             />
                           </TableCell>
-                          <TableCell >{row.product.name}</TableCell>
+                          <TableCell>{row.product.name}</TableCell>
 
-                          <TableCell >{row.hoaDon.oldQuantity}</TableCell>
-                          <TableCell >{row.hoaDon.quantity}</TableCell>
-                          <TableCell >{row.hoaDon.newQuantity}</TableCell>
+                          <TableCell>{ row.type === "nhap" ? row.hoaDon.oldQuantity : row.hoaDon.newQuantity}</TableCell>
+                          <TableCell>{row.hoaDon.quantity}</TableCell>
+                          <TableCell>{ row.type === "nhap" ? row.hoaDon.newQuantity : row.hoaDon.oldQuantity}</TableCell>
                           <TableCell>
-                            {" "}
                             {row.type === "nhap" ? "Nhập hàng" : "Xuất hàng"}
                           </TableCell>
                           <TableCell>{formatLocalTime(row.date)}</TableCell>
@@ -355,6 +365,65 @@ const WarehouseCard = () => {
               </TableBody>
             </Table>
           </TableContainer>
+        {  keySearch && checkValue(data)  && <TableContainer>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số tồn đầu kì:
+                          </TableCell>
+                          <TableCell>
+                          {data[0]?.hoaDon.oldQuantity}
+                          {/* {data?.reduce((acc, cur) => acc + cur.hoaDon.newQuantity, 0)} */}
+                          </TableCell>
+                        </TableRow>
+
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số nhập trong kì:
+                          </TableCell>
+                          <TableCell>
+                          {/* {data?.reduce((acc, cur) => acc + cur.hoaDon.quantity, 0)} */}
+                          {data?.reduce((acc, cur) => {
+                              if (cur.hoaDon && cur.hoaDon.hoaDonNhapId) {
+                               return acc + cur.hoaDon.quantity;
+                           }
+                              return acc;
+                          }, 0)}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số nhập trong kì:
+                          </TableCell>
+                          <TableCell>
+                          {/* {data?.reduce((acc, cur) => acc + cur.hoaDon.quantity, 0)} */}
+                          {data?.reduce((acc, cur) => {
+                              if (cur.hoaDon && cur.hoaDon.hoaDonXuatId) {
+                               return acc + cur.hoaDon.quantity;
+                           }
+                              return acc;
+                          }, 0)}
+                          </TableCell>
+                        </TableRow>
+                        
+
+                        <TableRow>
+                        <TableCell colSpan={3} />
+                        <TableCell align="right" style={{borderRight:"1px solid black"}}>
+                            Tổng số tồn cuối kì:
+                          </TableCell>
+                          <TableCell>
+                          {data[data.length - 1 ]?.hoaDon.newQuantity}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>}  
+        
 
           <TablePagination
             rowsPerPageOptions={[10, 15, 20]}
@@ -410,17 +479,27 @@ const WarehouseCard = () => {
             {dataModal.hoaDons && (
               <>
                 <Paper>
-                  <TableContainer  style={{ overflowY: "auto", maxHeight: "400px", border:"1px solid black", marginTop:"20px"  }}>
-                    <Table stickyHeader style={{ width: "100%",}}>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>STT</TableCell>
-                          <TableCell>Mã sản phẩm</TableCell>
-                          <TableCell style={{width:"150px"}}>Mã chứng từ</TableCell>
-                          <TableCell>SL Tồn</TableCell>
-                          <TableCell>SL Nhập</TableCell>
-                          <TableCell>SL Tồn cuối </TableCell>
-                          <TableCell>Diễn giải</TableCell>
+                  <TableContainer
+                    style={{
+                      overflowY: "auto",
+                      maxHeight: "400px",
+                      border: "1px solid black",
+                      marginTop: "20px",
+                    }}
+                  >
+                  
+                    <Table stickyHeader style={{ width: "100%" }}>
+                      <TableHead >
+                        <TableRow >
+                          <TableCell style={{ borderBottom: "1px solid black" ,backgroundColor: "#ddd"}}>STT</TableCell>
+                          <TableCell style={{ borderBottom: "1px solid black" ,backgroundColor: "#ddd"}}>Mã sản phẩm</TableCell>
+                          <TableCell style={{ width: "150px" , borderBottom: "1px solid black" ,backgroundColor: "#ddd"}}>
+                            Mã chứng từ
+                          </TableCell>
+                          <TableCell style={{ borderBottom: "1px solid black" ,backgroundColor: "#ddd"}}>SL Tồn</TableCell>
+                          <TableCell style={{ borderBottom: "1px solid black" ,backgroundColor: "#ddd"}}>SL Nhập</TableCell>
+                          <TableCell style={{ borderBottom: "1px solid black" ,backgroundColor: "#ddd"}}>SL Tồn cuối </TableCell>
+                          <TableCell style={{ borderBottom: "1px solid black" ,backgroundColor: "#ddd"}}>Diễn giải</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -430,7 +509,7 @@ const WarehouseCard = () => {
                             page * rowPerPage + rowPerPage
                           )
                           .map((row, index) => {
-                            return (  
+                            return (
                               <TableRow key={row?.id}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{row?.productId} </TableCell>

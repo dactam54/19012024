@@ -224,7 +224,8 @@ const Warehouse = () => {
       <div>
         <input
           type="text"
-          className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
+          // className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
+          className="bg-white text-gray-700 rounded-md py-2 px-4 w-full border-2 border-gray-300 focus:outline-none focus:border-green-600"
           placeholder="Tìm kiếm nhãn hiệu"
           onChange={(e) => setKeySearch(e.target.value)}
         />

@@ -200,7 +200,8 @@ const HistoryBill = () => {
 
       <input
         type="text"
-        className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
+        // className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
+        className="bg-white text-gray-700 rounded-md py-2 px-4 w-full border-2 border-gray-300 focus:outline-none focus:border-green-600"
         placeholder="Nhập thông tin cần tìm kiếm"
         onChange={(e) => setKeySearch(e.target.value)}
       />
