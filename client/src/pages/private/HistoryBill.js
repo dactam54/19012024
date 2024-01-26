@@ -117,30 +117,6 @@ const HistoryBill = () => {
     setPage(0);
   };
 
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     if (!dateRange.startDate || !dateRange.endDate) {
-  //       const currentDate = new Date();
-  //       const endDate = currentDate.toISOString().slice(0, 16);
-  //       const startDate = new Date(currentDate - 30 * 24 * 60 * 60 * 1000)
-  //         .toISOString()
-  //         .slice(0, 16);
-  //       setDateRange({
-  //         startDate,
-  //         endDate,
-  //       });
-  //     }
-  //     const response = await apiGetAllTheKhos({
-  //       startDate: dateRange.startDate,
-  //       endDate: dateRange.endDate,
-  //     });
-  //     setLoading(false);
-  //     if (response.length > 0) setData(response);
-  //     console.log("data123",response.map((item) => item)
-  //     );
-  //   };
-
-
   const [noteParent, setNoteParent] = useState("");
   const fetchData = async () => {
     setLoading(true);

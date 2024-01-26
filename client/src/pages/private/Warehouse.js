@@ -99,23 +99,12 @@ const Warehouse = () => {
   };
   const handleClose = () => setOpen(false);
 
-  // const currentDate = new Date();
-  // const endDate = currentDate.toISOString().slice(0, 16);
-  // const startDate = new Date(currentDate - 30 * 24 * 60 * 60 * 1000)
-  //   .toISOString()
-  //   .slice(0, 16);
-
-  // setDateRange({
-  //   startDate,
-  //   endDate,
-  // });
-
   const fetchDataModal = async () => {
     try {
       setLoading(true);
       const response = await apiGetAllTheKhos({
-        startDate: "2024-01-08",
-        endDate: "2024-01-20",
+        startDate: "2023-01-08",
+        endDate: "2025-01-20",
       });
       setLoading(false);
       if (response.length > 0) {
@@ -539,6 +528,8 @@ const Warehouse = () => {
                       </TableBody>
                     </Table>
                   </TableContainer>
+
+                  
                   <div>
                     <TablePagination
                       rowsPerPageOptions={[10, 15, 20]}

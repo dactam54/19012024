@@ -370,6 +370,9 @@ const WarehouseCard = () => {
               <div>
                 Mã phiếu : <span> {dataModal.maHoaDon}</span>
               </div>
+              <div>
+                Diễn giải : <span>{dataModal.note}</span>
+              </div>
             </div>
 
             {/* <div>Loại phiếu :({dataModal.hoaDons[0].hoaDonNhapId})</div> */}
@@ -387,6 +390,7 @@ const WarehouseCard = () => {
                           <TableCell>SL trước nhập</TableCell>
                           <TableCell>SL nhập</TableCell>
                           <TableCell>SL sau nhập</TableCell>
+                          <TableCell>Diễn giải</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -404,6 +408,7 @@ const WarehouseCard = () => {
                                 <TableCell>{row?.oldQuantity}</TableCell>
                                 <TableCell>{row?.quantity}</TableCell>
                                 <TableCell>{row?.newQuantity}</TableCell>
+                                <TableCell>{row?.note}</TableCell>
                               </TableRow>
                             );
                           })}

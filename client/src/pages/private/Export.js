@@ -33,7 +33,6 @@ const inputStyle = {
   width: "300px",
   padding: "8px",
   margin: "20px 20px 10px 20px",
-
   boxSizing: "border-box",
   border: "1px solid #999",
   borderRadius: "10px",

@@ -699,6 +699,9 @@ export const getImportProductDetailsAll = async () => {
           },
         },
       },
+      orderBy: {
+        date: "desc",
+      },
     });
     return allProducts;
   } catch (error) {
@@ -720,6 +723,9 @@ export const getExportProductDetailsAll = async () => {
             createdAt: "desc",
           },
         },
+      },
+      orderBy: {
+        date: "desc",
       },
     });
     console.log(allProducts);
