@@ -39,6 +39,19 @@ const style = {
   p: 4,
   borderRadius: "10px",
 };
+
+
+const tableCellStyle1 = {
+  // border: "1px solid black",
+  padding: "8px",
+  textAlign: "left",
+  position: 'sticky',
+  top: "-1px", 
+  zIndex: 100,
+  backgroundColor: "#ddd"
+};
+
+
 const columns = [
   { field: "id", name: "ID", width: 90 },
 
@@ -220,14 +233,14 @@ const Warehouse = () => {
         <button
           type="button"
           className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
-          onClick={() => navigate("/he-thong/import")}
+          onClick={() => navigate("/he-thong/quan-ly-nhap-hang")}
         >
           <span>Tạo phiếu nhập </span>
         </button>
         <button
           type="button"
           className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
-          onClick={() => navigate("/he-thong/export")}
+          onClick={() => navigate("/he-thong/quan-ly-xuat-hang")}
         >
           <span>Tạo phiếu xuất </span>
         </button>
@@ -235,7 +248,7 @@ const Warehouse = () => {
         <button
           type="button"
           className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
-          onClick={() => navigate("/he-thong/lich-su-phieu")}
+          onClick={() => navigate("/he-thong/quan-ly-lich-su-phieu")}
         >
           <span>Lịch sử phiếu </span>
         </button>
@@ -243,7 +256,7 @@ const Warehouse = () => {
         <button
           type="button"
           className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
-          onClick={() => navigate("/he-thong/the-kho")}
+          onClick={() => navigate("/he-thong/quan-ly-the-kho")}
         >
           <span>Tra cứu</span>
         </button>
@@ -356,7 +369,7 @@ const Warehouse = () => {
             <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
               Thẻ kho
             </h1>
-            <div>Người lập thẻ :</div>
+            {/* <div>Người lập thẻ :</div> */}
             <div>
               Tên sản phẩm :<span>{dataModal[0]?.product?.name}</span>
             </div>
@@ -369,7 +382,8 @@ const Warehouse = () => {
             {dataModal && (
               <>
                 <Paper>
-                  <TableContainer sx={{ maxHeight: 600 }}>
+                  <TableContainer sx={{ maxHeight: 600 }} >
+                  {/* style={{ overflowY: "auto", maxHeight: "300px", border:"1px solid black", marginTop:"20px"  }} */}
                     <Table stickyHeader>
                       <TableHead>
                         <TableRow>
@@ -393,46 +407,45 @@ const Warehouse = () => {
                           </TableCell>
                           <TableCell
                             colSpan={2}
-                            style={{ border: "1px solid #ddd", width: "70px" }}
+                            style={{ border: "1px solid #ddd", width: "50px" }}
                           >
                             Loại chứng từ
                           </TableCell>
-                          {/* <TableCell rowSpan={2} style={{ border: '1px solid #ddd' }}>Ngày </TableCell> */}
                           <TableCell
                             colSpan={4}
-                            style={{ border: "1px solid #ddd" }}
+                            style={{ border: "1px solid #ddd"  ,textAlign:"center"}}
                           >
-                            Số lượng{" "}
+                            Số lượng
                           </TableCell>
                           <TableCell
                             rowSpan={2}
                             style={{ border: "1px solid #ddd" }}
                           >
-                            Mã hóa đơn
+                            Diễn giải
                           </TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell
-                            style={{ border: "1px solid #ddd", width: "10%" }}
+                            style={{ border: "1px solid #ddd", width: "5%" }}
                           >
-                            Nhập{" "}
-                          </TableCell>
-                          <TableCell
-                            style={{ border: "1px solid #ddd", width: "10%" }}
-                          >
-                            Xuất
-                          </TableCell>
-                          <TableCell style={{ border: "1px solid #ddd" }}>
-                            Ban đầu
-                          </TableCell>
-                          <TableCell style={{ border: "1px solid #ddd" }}>
                             Nhập
                           </TableCell>
-                          <TableCell style={{ border: "1px solid #ddd" }}>
+                          <TableCell
+                            style={{ border: "1px solid #ddd", width: "5%" }}
+                          >
                             Xuất
                           </TableCell>
                           <TableCell style={{ border: "1px solid #ddd" }}>
-                            Tồn
+                           Tồn ĐK
+                          </TableCell>
+                          <TableCell style={{ border: "1px solid #ddd" }}>
+                            Nhập TK
+                          </TableCell>
+                          <TableCell style={{ border: "1px solid #ddd" }}>
+                            Xuất TK
+                          </TableCell>
+                          <TableCell style={{ border: "1px solid #ddd" }}>
+                            Tồn CK
                           </TableCell>
                         </TableRow>
                       </TableHead>
@@ -451,8 +464,14 @@ const Warehouse = () => {
                                 <TableCell style={{ border: "1px solid #ddd" }}>
                                   {formatLocalTime(row.date)}
                                 </TableCell>
-                                <TableCell style={{ border: "1px solid #ddd" }}>
+                                {/* <TableCell style={{ border: "1px solid #ddd" }}>
                                   {row?.hoaDon?.maHoaDon}
+                                </TableCell> */}
+
+                                <TableCell style={{ border: "1px solid #ddd" , color :"red" }}>
+                                  <Link to={"/he-thong/quan-ly-the-kho?hoaDonId=" + row?.hoaDonId} >
+                                    CT-{row?.hoaDonId}
+                                  </Link>
                                 </TableCell>
                                 <TableCell
                                   style={{
@@ -512,7 +531,11 @@ const Warehouse = () => {
                                     : row?.hoaDon?.oldQuantity -
                                       row?.hoaDon?.quantity}
                                 </TableCell>
-                                <TableCell style={{ border: "1px solid #ddd" }}>
+
+                                <TableCell>
+                                  {row?.hoaDon?.note}
+                                </TableCell>
+                                {/* <TableCell style={{ border: "1px solid #ddd" }}>
                                   <Link
                                     to={
                                       "/he-thong/the-kho?hoaDonId=" +
@@ -521,7 +544,7 @@ const Warehouse = () => {
                                   >
                                     HD-{row?.hoaDonId}
                                   </Link>
-                                </TableCell>
+                                </TableCell> */}
                               </TableRow>
                             );
                           })}

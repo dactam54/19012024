@@ -23,25 +23,26 @@ import { toast } from "react-toastify";
 // import XLSX from 'xlsx/xlsx.mjs';
 import Xlsx from "../../utils/Xlsx";
 import * as XLSX from "xlsx/xlsx.mjs";
+import { GrLinkPrevious } from "react-icons/gr";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 1000,
+  width: 1100,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
   borderRadius: "10px",
 };
 const columns = [
-  { field: "id", name: "ID", width: 90 },
+  { field: "id", name: "ID", width: 40 },
 
   {
     field: "maHoaDon",
     name: "Mã chứng từ",
-    width: 150,
+    width: 90,
     editable: true,
   },
   {
@@ -50,18 +51,33 @@ const columns = [
     width: 150,
     editable: true,
   },
-  { field: "id", name: "Tên sản phẩm", width: 90 },
-
+  { 
+    field: "id", 
+    name: "Tên sản phẩm", 
+    width: 200
+   },
+  {
+    field: "oldProduct",
+    name: "Tồn ĐK",
+    width: 50,
+    editable: true,
+  },
   {
     field: "quantityProduct",
     name: "Số lượng",
-    width: 150,
+    width: 50,
+    editable: true,
+  },
+  {
+    field: "newProduct",
+    name: "Tồn CK",
+    width: 50,
     editable: true,
   },
   {
     field: "createdAt",
     name: "Loại",
-    width: 150,
+    width: 50,
     editable: true,
   },
   {
@@ -73,7 +89,7 @@ const columns = [
   {
     field: "action",
     name: "Thao tác",
-    width: 110,
+    width: 100,
     editable: true,
   },
 ];
@@ -238,7 +254,11 @@ const WarehouseCard = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h3 className="font-bold text-[30px] pb-2 ">Tra cứu </h3>
+
+    <div onClick={()=> navigate("/he-thong/thong-tin-kho")} style={{cursor:"pointer"}}>
+    <GrLinkPrevious  size={25}/>
+    </div>
+      <h3 className="font-bold text-[30px] pb-2 ">Tra cứu thông tin </h3>
       <input
         type="text"
         className="bg-white text-gray-700 rounded-md py-2 px-4 w-full"
@@ -274,7 +294,7 @@ const WarehouseCard = () => {
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns.map((column, index) => (
                     <TableCell
                       style={{ backgroundColor: "black", color: "white" }}
                       key={column.field}
@@ -291,17 +311,20 @@ const WarehouseCard = () => {
                     .map((row, index) => {
                       return (
                         <TableRow hover key={row.id}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{row.hoaDon.maHoaDon}</TableCell>
-                          <TableCell>
+                          <TableCell >{index + 1}</TableCell>
+                          <TableCell >{`CT-${row.hoaDonId}`}</TableCell>
+                          <TableCell >
                             <img
                               src={row.product.thumb}
                               alt="ảnh sản phẩm"
                               className="h-[50px] object-contain"
                             />
                           </TableCell>
-                          <TableCell>{row.product.name}</TableCell>
-                          <TableCell>{row.hoaDon.quantity}</TableCell>
+                          <TableCell >{row.product.name}</TableCell>
+
+                          <TableCell >{row.hoaDon.oldQuantity}</TableCell>
+                          <TableCell >{row.hoaDon.quantity}</TableCell>
+                          <TableCell >{row.hoaDon.newQuantity}</TableCell>
                           <TableCell>
                             {" "}
                             {row.type === "nhap" ? "Nhập hàng" : "Xuất hàng"}
@@ -380,16 +403,16 @@ const WarehouseCard = () => {
             {dataModal.hoaDons && (
               <>
                 <Paper>
-                  <TableContainer sx={{ maxHeight: 800 }}>
-                    <Table stickyHeader>
+                  <TableContainer  style={{ overflowY: "auto", maxHeight: "400px", border:"1px solid black", marginTop:"20px"  }}>
+                    <Table stickyHeader style={{ width: "100%",}}>
                       <TableHead>
                         <TableRow>
                           <TableCell>STT</TableCell>
                           <TableCell>Mã sản phẩm</TableCell>
-                          <TableCell>Mã thẻ</TableCell>
-                          <TableCell>SL trước nhập</TableCell>
-                          <TableCell>SL nhập</TableCell>
-                          <TableCell>SL sau nhập</TableCell>
+                          <TableCell style={{width:"150px"}}>Mã chứng từ</TableCell>
+                          <TableCell>SL Tồn</TableCell>
+                          <TableCell>SL Nhập</TableCell>
+                          <TableCell>SL Tồn cuối </TableCell>
                           <TableCell>Diễn giải</TableCell>
                         </TableRow>
                       </TableHead>
@@ -400,11 +423,11 @@ const WarehouseCard = () => {
                             page * rowPerPage + rowPerPage
                           )
                           .map((row, index) => {
-                            return (
+                            return (  
                               <TableRow key={row?.id}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{row?.productId} </TableCell>
-                                <TableCell>{row?.id}</TableCell>
+                                <TableCell>{`CT-${row?.id}`}</TableCell>
                                 <TableCell>{row?.oldQuantity}</TableCell>
                                 <TableCell>{row?.quantity}</TableCell>
                                 <TableCell>{row?.newQuantity}</TableCell>

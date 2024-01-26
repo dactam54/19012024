@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+  import React, { useEffect, useRef, useState } from "react";
 import { apiGetProductsAdmin, apiImportManyProducts } from "../../apis";
 import Loading from "../../components/Loading";
 import { toast } from "react-toastify";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import { GrLinkPrevious } from "react-icons/gr";
+
 
 const tableCellStyle = {
   border: "1px solid #ddd",
@@ -14,7 +16,7 @@ const tableCellStyle = {
 
 
 const tableCellStyle1 = {
-  border: "1px solid black",
+  // border: "1px solid black",
   padding: "8px",
   textAlign: "left",
   position: 'sticky',
@@ -127,7 +129,7 @@ const Import = () => {
       });
       setSelectedItems([]);
       fetchProducts();
-      navigate("/he-thong/lich-su-phieu");
+      navigate("/he-thong/thong-tin-kho");
     }
   };
 
@@ -171,8 +173,16 @@ const Import = () => {
       ? "bg-gray-400 text-gray-600"
       : "bg-green-600 text-white"
   }`;
+
+  const buttonClass1= `py-2 px-4 rounded-md font-semibold flex items-center justify-center gap-2 ${ "bg-green-600 text-white"}`;
+
+
   return (
     <div >
+
+    <div onClick={()=> navigate("/he-thong/thong-tin-kho")} style={{cursor:"pointer"}}>
+    <GrLinkPrevious  size={25}/>
+    </div>
       <h3
         style={{ textAlign: "center" }}
         className="font-bold text-[30px] pb-2"
@@ -252,7 +262,7 @@ const Import = () => {
 
       {selectedItems.length > 0 && (
         <div style={{ overflowY: "auto", maxHeight: "300px", border:"1px solid black", marginTop:"20px"  }}>
-        <table style={{ borderCollapse: "collapse", width: "100%",}}>
+        <table  style={{ borderCollapse: "collapse", width: "100%",}}>
           <thead>
             <tr>
               <th style={tableCellStyle1 }>ID</th>
@@ -311,6 +321,19 @@ const Import = () => {
           color="success"
         >
           <span>Nhập hàng</span>
+        </Button>
+
+        <Button
+          onClick={()=>{
+            navigate("/he-thong/thong-tin-kho");
+          }}
+          // disabled={isImportButtonDisabled}
+          className={buttonClass1}
+          style={{ marginTop: "20px" , marginLeft: "20px"}}
+          variant="contained"
+          color="success"
+        >
+          <span>Hủy phiếu</span>
         </Button>
       </div>
     </div>

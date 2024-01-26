@@ -7,7 +7,7 @@ const path = {
     // MANAGE_Bill_EXPORT: 'quan-ly-phieu-xuat',
     // MANAGE_Bill_IMPORT: 'quan-ly-phieu-nhap',
    
-    STATISTICS: 'thong-ke',
+    STATISTICS: '',
     WAREHOUSE: 'thong-tin-kho',
     MANAGE_BRAND: 'quan-ly-nhan-hieu',
     MANAGE_PRODUCT: 'quan-ly-hang-hoa',
@@ -15,11 +15,11 @@ const path = {
     MANAGE_EXPORT: 'quan-ly-xuat',
 
     // PRODUCT_CARD_STORE: 'quan-ly-the-kho',
-    WAREHOUSE_CARD: 'the-kho',
-    HISTORY_BILL: 'lich-su-phieu',
+    WAREHOUSE_CARD: 'quan-ly-the-kho',
+    HISTORY_BILL: 'quan-ly-lich-su-phieu',
     PDF: 'bao-cao',
-    IMPORT : 'import',
-    EXPORT :'export'
+    IMPORT : 'quan-ly-nhap-hang',
+    EXPORT :'quan-ly-xuat-hang'
 }
 
 export default path

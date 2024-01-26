@@ -8,6 +8,7 @@ import {
   apiCreateProduct,
   apiImportProduct,
 } from "../apis/product";
+import { useNavigate } from "react-router";
 
 const InsertProduct = ({
   product,
@@ -17,6 +18,8 @@ const InsertProduct = ({
 }) => {
   const { brands } = useSelector((state) => state.app);
 
+
+  const navigate= useNavigate();
   const editorRef = useRef(null);
 
   const [payload, setPayload] = useState({
@@ -345,6 +348,8 @@ const InsertProduct = ({
           </div>
         )}
       </div>
+
+
 
       <button
         type="button"

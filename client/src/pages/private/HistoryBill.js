@@ -17,6 +17,7 @@ import {
 import { Loading } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
 import { useNavigate } from "react-router";
+import { GrLinkPrevious } from "react-icons/gr";
 
 
 const style = {
@@ -32,7 +33,7 @@ const style = {
 };
 
 const tableCellStyle1 = {
-  border: "1px solid black",
+  // border: "1px solid black",
   padding: "8px",
   textAlign: "left",
   position: 'sticky',
@@ -191,7 +192,11 @@ const HistoryBill = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h3 className="font-bold text-[30px] pb-2 ">Lịch sử phiếu nhập / xuất</h3>
+
+    <div onClick={()=> navigate("/he-thong/thong-tin-kho")} style={{cursor:"pointer"}}>
+    <GrLinkPrevious  size={25}/>
+    </div>
+      <h3 className="font-bold text-[30px] pb-2 ">Lịch sử phiếu </h3>
 
       <input
         type="text"
@@ -240,27 +245,6 @@ const HistoryBill = () => {
           value={dateRange.endDate}
           onChange={handleEndDateChange}
         />
-      </div> */}
-
-      {/* <div style={{display: 'flex', flexDirection:'row', marginRight:'20px'}}>
-      <button
-              type="button"
-              onClick={() => navigate("/he-thong/quan-ly-nhap")}
-              className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2">
-              <span>Tạo phiếu nhập</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/he-thong/quan-ly-xuat")}
-              className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2">
-              <span>Tạo phiếu xuất</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/he-thong/quan-ly-xuat")}
-              className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2">
-              <span>Quản lý hàng hóa</span>
-            </button>
       </div> */}
 
       {loading ? (
@@ -344,18 +328,31 @@ const HistoryBill = () => {
             </h1>
             <div>
               <div>
-                Người giao :{" "}
+                Người giao :
                 <span>
                   {dataModal[0]?.hoaDonNhap?.shipper ||
                     dataModal[0]?.hoaDonXuat?.shipper}
                 </span>
               </div>
               <div>
-                Người nhận :{" "}
+                Người nhận :
                 <span>
                   {dataModal[0]?.hoaDonNhap?.user ||
                     dataModal[0]?.hoaDonXuat?.user}
                 </span>
+              </div>
+
+              <div>
+                Thời gian :
+                <span>
+                    {/* {formatLocalTime(dataModal[0]?.date)} */}
+                    {/* {formatLocalTime(dataModal[0]?.createdAt)} */}
+                    {
+                      formatLocalTime(dataModal[0]?.hoaDonNhap?.date || dataModal[0]?.hoaDonXuat?.date)
+                    }
+                </span>
+
+                
               </div>
               <div>
                 Diễn giải :
@@ -367,9 +364,6 @@ const HistoryBill = () => {
 
             {dataModal && (
               <>
-                <div className="flex justify-between">
-                  {/* <span>{dataModal.hoaDonNhap?.shipper ||dataModal?.hoaDonXuat?.shipper }</span> */}
-                </div>
                 <div >
                 <Paper>
                   <TableContainer  style={{ overflowY: "auto", maxHeight: "400px", border:"1px solid black", marginTop:"20px"  }}>
@@ -379,12 +373,12 @@ const HistoryBill = () => {
                           <TableCell style={{...tableCellStyle1}}>STT</TableCell>
                           <TableCell style={{...tableCellStyle1}}>Ảnh</TableCell>
                           {/* <TableCell>Người giao</TableCell> */}
-                          <TableCell style={{...tableCellStyle1}}>Tên sản phẩm </TableCell>
+                          <TableCell style={{...tableCellStyle1,width:"450px"}}>Tên sản phẩm </TableCell>
                           <TableCell style={{ ...tableCellStyle1,width: "120px" }}>
                             Mã sản phẩm
                           </TableCell>
                           <TableCell style={{ ...tableCellStyle1,width: "120px" }}>Số lượng</TableCell>
-                          <TableCell style={{ ...tableCellStyle1 ,width: "120px"}}>Diễn giải</TableCell>
+                          <TableCell style={{ ...tableCellStyle1 ,width: "250px"}}>Diễn giải</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
