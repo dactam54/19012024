@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { apiGetProductsAdmin, apiExportManyProducts } from "../../apis";
 import Loading from "../../components/Loading";
@@ -6,16 +7,15 @@ import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { GrLinkPrevious } from "react-icons/gr";
-
+import { MdOutlineClear } from "react-icons/md";
+import { set } from "date-fns";
 const tableCellStyle = {
   border: "1px solid #ddd",
   padding: "8px",
   textAlign: "left",
 };
 
-
 const tableCellStyle1 = {
-  // border: "1px solid black",
   padding: "8px",
   textAlign: "left",
   position: 'sticky',
@@ -51,28 +51,56 @@ const Export = () => {
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [formData, setFormData] = useState({
+    shipper: "",
+    user: "",
+    date: "",
+    note: "",
+  });
+ 
+  console.log("selectedItems",selectedItems)
   const quantityInputRef = useRef(null);
-  console.log("selectedItems", selectedItems);
-  console.log("selectedValue", selectedValue);
+  const navigate = useNavigate();
 
-  const fetchProducts = React.useCallback(async () => {
+  const fetchProducts = async () => {
     setLoading(true);
     const response = await apiGetProductsAdmin({ page: page });
     setLoading(false);
     if (response.err === 0) setData(response.productDatas);
-  }, [page]);
+  };
 
   useEffect(() => {
     fetchProducts();
-  }, [page, fetchProducts]);
+  }, [page]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = data?.rows?.filter(
+        (item) => item?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
+
+  // const handleDropdownChange = (event) => {
+  //   const value = event.target.value;
+  //   setSelectedValue(value);
+  // };
 
   const handleDropdownChange = (event) => {
     const value = event.target.value;
-    setSelectedValue(value);
+    const selectedItem = data?.rows.find((item) => item.id === value);
+    if (selectedItem) {
+      const { id, name } = selectedItem;
+      console.log("Selected ID:", id);
+      console.log("Selected Name:", name);
+      setSelectedValue(value);
+    }
   };
+  
 
-  const navigate = useNavigate();
   useEffect(() => {
     if (selectedValue) {
       const existingItemIndex = selectedItems.findIndex(
@@ -102,10 +130,14 @@ const Export = () => {
       return updatedItems;
     });
   };
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  }
 
   const handleDeleteItem = (index) => {
     setSelectedItems((prevItems) => prevItems.filter((_, i) => i !== index));
   };
+
   const handleExport = async () => {
     const response = await apiExportManyProducts({
       hoaDons: selectedItems?.map((item) => ({
@@ -115,7 +147,6 @@ const Export = () => {
       })),
       ...formData,
       date: new Date(formData?.date),
-      note: formData.note,
     });
 
     if (response?.id) {
@@ -148,43 +179,48 @@ const Export = () => {
     });
   };
 
-  const [formData, setFormData] = useState({
-    shipper: "",
-    user: "",
-    date: "",
-    note: "",
-  });
-  // const isImportButtonDisabled =
-  //   formData.shipper.trim() === "" ||
-  //   formData.user.trim() === "" ||
-  //   formData.date.trim() === "" ||
-  //   selectedItems.length === 0;
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    const filtered = data?.rows?.filter(
+      (item) => item?.name.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
 
-    const isImportButtonDisabled =
-  !(formData.shipper.trim() && 
-    formData.user.trim() && 
-    formData.date.trim() && 
-    selectedItems.length > 0 && 
-    selectedItems.every(item => item.value.trim() && item.quantity > 0)
-  );
+  const isExportButtonDisabled =
+    !(formData.shipper.trim() && 
+      formData.user.trim() && 
+      formData.date.trim() && 
+      selectedItems.length > 0 && 
+      selectedItems.every(item => item.value.trim() && item.quantity > 0)
+    );
+
   const buttonClass = `py-2 px-4 rounded-md font-semibold flex items-center justify-center gap-2 ${
-    isImportButtonDisabled
+    isExportButtonDisabled
       ? "bg-gray-400 text-gray-600"
       : "bg-green-600 text-white"
   }`;
 
   const buttonClass1= `py-2 px-4 rounded-md font-semibold flex items-center justify-center gap-2 ${ "bg-green-600 text-white"}`;
-  return (
-    <div >
 
-     <div onClick={()=> navigate("/he-thong/thong-tin-kho")} style={{cursor:"pointer"}}>
-    <GrLinkPrevious  size={25}/>
-    </div>
-      <h3
-        style={{ textAlign: "center" }}
-        className="font-bold text-[30px] pb-2"
-      >
-        Phiếu xuất
+  const handleAddProduct = (selectedProduct) => {
+    setSelectedItems((prevItems) => [
+      ...prevItems,
+      {
+        value: selectedProduct.id,
+        quantity: 1,
+        note: "",
+      },
+    ]);
+    setSelectedValue("");
+  };
+  return (
+    <div>
+      <div onClick={() => navigate("/he-thong/thong-tin-kho")} style={{ cursor: "pointer" }}>
+        <GrLinkPrevious size={25} />
+      </div>
+      <h3 style={{ textAlign: "center" }} className="font-bold text-[30px] pb-2">
+        Phiếu Xuất
       </h3>
 
       <div style={flexContainerStyle}>
@@ -195,7 +231,6 @@ const Export = () => {
           type="text"
           id="shipper"
           name="shipper"
-          value={formData.shipper}
           onChange={handleInputChange}
           style={inputStyle}
         />
@@ -209,7 +244,6 @@ const Export = () => {
           type="text"
           id="user"
           name="user"
-          value={formData.user}
           onChange={handleInputChange}
           style={inputStyle}
         />
@@ -223,7 +257,6 @@ const Export = () => {
           type="datetime-local"
           id="date"
           name="date"
-          value={formData.date}
           onChange={handleInputChange}
           style={inputStyle}
         />
@@ -237,11 +270,76 @@ const Export = () => {
           type="text"
           id="note"
           name="note"
-          value={formData.note}
           onChange={handleInputChange}
           style={inputStyle}
         />
       </div>
+
+      {/* <div style={flexContainerStyle}>
+        <label htmlFor="note" style={labelStyle}>
+          Tìm kiếm :
+        </label>
+        <input
+          type="text"
+          placeholder="Tìm kiếm sản phẩm"
+          value={searchTerm}
+          onChange={(e) => handleSearch(e.target.value)}
+          style={inputStyle}
+        />
+        <MdOutlineClear />
+      
+      </div> */}
+
+      <div style={flexContainerStyle}>
+  <label htmlFor="note" style={labelStyle}>
+    Tìm kiếm :
+  </label>
+  <div style={{ position: 'relative', width: '300px' }}>
+    <input
+      type="text"
+      placeholder="Tìm kiếm sản phẩm"
+      value={searchTerm}
+      onChange={(e) => handleSearch(e.target.value)}
+      style={{ ...inputStyle, paddingRight: '30px' }}  
+    />
+    <MdOutlineClear
+      style={{
+        position: 'absolute',
+        top: '40%',
+        right: '-20px',
+        fontSize: '20px',
+        transform: 'translate(-50%)',
+        cursor: 'pointer',
+        // border:'1px solid black'
+      }}
+      onClick={() => handleClearSearch()} 
+    />
+  </div>
+</div>
+
+
+      {searchTerm && (
+        <div className="search-results" style={{ overflowY: "auto", maxHeight: "150px", minWidth:"150px", maxWidth: "600px", border:"1px solid black", marginTop:"10px" , marginBottom :"10px" }}>
+          <table>
+            <tbody >
+              {filteredData?.map((item, index) => (
+                <tr key={item.id} onClick={() => handleAddProduct(item)} style={{border :"1px solid black" , cursor :"pointer" , }}>
+                <td style={{  backgroundColor: "white" , borderRight :"1px solid black" , padding:"5px"}} onMouseOver={(e) => e.target.style.backgroundColor = "#e6e6e6"} onMouseOut={(e) => e.target.style.backgroundColor = "white"}>
+                <img
+                                src={item.thumb}
+                                alt="ảnh sản phẩm"
+                                className="h-[30px] object-contain"
+                              />
+                </td>
+                <td style={{  backgroundColor: "white" }} onMouseOver={(e) => e.target.style.backgroundColor = "#e6e6e6"} onMouseOut={(e) => e.target.style.backgroundColor = "white"}>
+                {item.name}
+                </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <select
         onChange={handleDropdownChange}
@@ -249,69 +347,139 @@ const Export = () => {
         style={{ border: "1px solid black", borderRadius: "10px" }}
       >
         <option value="">Chọn hàng hóa</option>
-        {data?.rows?.map((item) => (
-          <option key={item.id} value={item.id}>
-            {item?.name}
-          </option>
-        ))}
+        {searchTerm
+          ? filteredData?.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item?.name}
+              </option>
+            ))
+          : data?.rows?.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item?.name}
+              </option>
+            ))}
       </select>
       {selectedValue && <p>Selected Value: {selectedValue}</p>}
 
-      {selectedItems.length > 0 && (
+      {/* {selectedItems.length > 0 && (
         <div style={{ overflowY: "auto", maxHeight: "300px", border:"1px solid black", marginTop:"20px"  }}>
-        <table style={{ borderCollapse: "collapse", width: "100%",}}>
-          <thead>
-            <tr>
-              <th style={tableCellStyle1 }>ID</th>
-              <th style={{ ...tableCellStyle1, width:"100px"}}>Số lượng</th>
-              <th style={tableCellStyle1}>Diễn giải</th>
-              <th style={{ ...tableCellStyle1, width:"100px"}}>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedItems.map((item, index) => (
-              <tr key={index}>
-                <td style={tableCellStyle}>{item.value}</td>
-                <td style={tableCellStyle}>
-                  <input
-                    ref={
-                      index === selectedItems.length - 1
-                        ? quantityInputRef
-                        : null
-                    }
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleQuantityChange(parseInt(e.target.value), index)
-                    }
-                    min={1}
-                    style={{ width: "70px", padding: "2px"}}
-                  />
-                </td>
-                <td style={tableCellStyle}>
-                  <input
-                    type="text"
-                    value={item.note}
-                    onChange={(e) => handleNoteChange(e.target.value, index)}
-                    style={{ width: "100%", padding: "2px"}}
-                  />
-                </td>
-                <td style={{ ...tableCellStyle, textAlign: 'center' }}>
-                  <button onClick={() => handleDeleteItem(index)}>
-                    <MdDelete size={18} />
-                  </button>
-                </td>
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
+            <thead>
+              <tr>
+                <th style={tableCellStyle1}>ID</th>
+                <th style={{ ...tableCellStyle1, width:"100px"}}>Số lượng</th>
+                <th style={tableCellStyle1}>Diễn giải</th>
+                <th style={{ ...tableCellStyle1, width:"100px"}}>Thao tác</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {selectedItems.map((item, index) => (
+                <tr key={index}>
+                  <td style={tableCellStyle}>{item.value}</td>
+                  <td style={tableCellStyle}>
+                    <input
+                      ref={
+                        index === selectedItems.length - 1
+                          ? quantityInputRef
+                          : null
+                      }
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(parseInt(e.target.value), index)
+                      }
+                      min={1}
+                      style={{ width: "70px", padding: "2px"}}
+                    />
+                  </td>
+                  <td style={tableCellStyle}>
+                    <input
+                      type="text"
+                      value={item.note}
+                      onChange={(e) => handleNoteChange(e.target.value, index)}
+                      style={{ width: "100%", padding: "2px"}}
+                    />
+                  </td>
+                  <td style={{ ...tableCellStyle, textAlign: 'center' }}>
+                    <button onClick={() => handleDeleteItem(index)}>
+                      <MdDelete size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-       
-      )}
+      )} */}
+      
+      {selectedItems.length > 0 && (
+  <div style={{ overflowY: "auto", maxHeight: "300px", border: "1px solid black", marginTop: "20px" }}>
+    <table style={{ borderCollapse: "collapse", width: "100%" }}>
+      <thead>
+        <tr>
+          <th style={tableCellStyle1}>ID</th>
+          <th style={tableCellStyle1}>Ảnh</th>
+          <th style={tableCellStyle1}>Tên sản phẩm</th>
+          <th style={{ ...tableCellStyle1, width: "100px" }}>Số lượng</th>
+          <th style={tableCellStyle1}>Diễn giải</th>
+          
+          <th style={{ ...tableCellStyle1, width: "100px" }}>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        {selectedItems.map((item, index) => {
+          const product = data?.rows.find((product) => product.id === item.value);
+
+          return (
+            <tr key={index}>
+              <td style={tableCellStyle}>{item.value}</td>
+              <td style={tableCellStyle}>
+                              <img
+                                src={product.thumb}
+                                alt="ảnh sản phẩm"
+                                className="h-[50px] object-contain"
+                              />
+                           
+              </td>
+              <td style={tableCellStyle}>{product?.name}</td>
+              <td style={tableCellStyle}>
+                <input
+                  ref={index === selectedItems.length - 1 ? quantityInputRef : null}
+                  type="number"
+                  value={item.quantity}
+                  onChange={(e) => handleQuantityChange(parseInt(e.target.value), index)}
+                  min={1}
+                  style={{ width: "70px", padding: "2px" }}
+                />
+              </td>
+              <td style={tableCellStyle}>
+                <input
+                  type="text"
+                  value={item.note}
+                  onChange={(e) => handleNoteChange(e.target.value, index)}
+                  style={{ width: "100%", padding: "2px" }}
+                />
+              </td>
+              {/* <td style={tableCellStyle}>{item.value}</td> */}
+              <td style={{ ...tableCellStyle, textAlign: 'center' }}>
+                <button onClick={() => handleDeleteItem(index)}>
+                  <MdDelete size={18} />
+                </button>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+)}
+
+
+
       <div className="flex justify-center py-4">
         <Button
           onClick={handleExport}
-          disabled={isImportButtonDisabled}
+          disabled={isExportButtonDisabled}
           className={buttonClass}
           style={{ marginTop: "20px" }}
           variant="contained"
@@ -321,12 +489,11 @@ const Export = () => {
         </Button>
 
         <Button
-          onClick={()=>{
+          onClick={() => {
             navigate("/he-thong/thong-tin-kho");
           }}
-          // disabled={isImportButtonDisabled}
           className={buttonClass1}
-          style={{ marginTop: "20px" , marginLeft: "20px"}}
+          style={{ marginTop: "20px", marginLeft: "20px" }}
           variant="contained"
           color="success"
         >
@@ -338,4 +505,3 @@ const Export = () => {
 };
 
 export default Export;
-
