@@ -133,7 +133,7 @@ const WarehouseCard = () => {
   //   }
   // };
 
-  const paperRef = useRef();
+  const pdfPrintRef = useRef();
 
   const handleRender = async (id) => {
     try {
@@ -189,17 +189,34 @@ const WarehouseCard = () => {
     setLoading(false);
   };
 
+  // let handleExcel = async () => {
+  //   let response1 = await apiGetAllTheKhos({
+  //     type: "SUBJECT",
+  //     limit: "",
+  //     offset: "",
+  //     keyword: "",
+  //   });
+  //   if (response1 && response1.err === 0) {
+  //     await Xlsx.exportExcel(response1, "Thẻ kho", "Thẻ kho");
+  //   }
+  // };
   let handleExcel = async () => {
-    let response1 = await apiGetAllTheKhos({
-      type: "SUBJECT",
-      limit: "",
-      offset: "",
-      keyword: "",
-    });
-    if (response1 && response1.err === 0) {
-      await Xlsx.exportExcel(response1, "Thẻ kho", "Thẻ kho");
+    try {
+      const response = await apiGetAllTheKhos({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        keyword: keySearch,
+      });
+  
+      if (response.length > 0) {
+        await Xlsx.exportExcel(response, "Phiếu kho", "Phiếu kho");
+      }
+    } catch (error) {
+      console.error("Error exporting to Excel:", error);
     }
   };
+
+
   const handleStartDateChange = (e) => {
     setDateRange((prev) => ({
       ...prev,
@@ -215,8 +232,7 @@ const WarehouseCard = () => {
   };
 
   const handlePrint = useReactToPrint({
-    onBeforeGetContent: () => setLoading(true),
-    content: () => paperRef.current,
+    content: () => pdfPrintRef.current,
     onAfterPrint: () => setLoading(false),
     onPrintError: (err) => {
       toast.error("Có lỗi xảy ra khi in phiếu");
@@ -305,7 +321,8 @@ const WarehouseCard = () => {
       {loading ? (
         <Loading />
       ) : (
-        <Paper sx={{ width: "100%" }}>
+        
+        <Paper sx={{ width: "100%" }} ref={pdfPrintRef}>
           <TableContainer sx={{ maxHeight: 850 }}>
             <Table stickyHeader>
               <TableHead>
@@ -365,6 +382,7 @@ const WarehouseCard = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
         {  keySearch && checkValue(data)  && <TableContainer>
                     <Table>
                       <TableBody>
@@ -434,25 +452,44 @@ const WarehouseCard = () => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleRowsPerPage}
           ></TablePagination>
-          <button
-            type="button"
-            className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2"
-            onClick={() => handleExcel}
-          >
-            <span>Xuất file </span>
-          </button>
+         
+
+<div style={{display :"flex", flexDirection :"rows"}}>
+<button
+  type="button"
+  className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
+  onClick={() => keySearch && checkValue(data) && handleExcel()} 
+  style={{ display: keySearch && checkValue(data) ? 'block' : 'none' }}
+>
+  <span>Xuất file Excel</span>
+</button>
+
+<button
+  onClick={() => keySearch && checkValue(data) && handlePrint()} 
+  className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
+  style={{ display: keySearch && checkValue(data) ? 'block' : 'none' }}
+>
+  Xuất PDF
+</button>
+</div>
+         
+
+
         </Paper>
       )}
 
-      {dataModal && (
+
+
+{dataModal && (
         <Modal
           open={open}
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
           className="page"
+         
         >
-          <Box sx={style} ref={paperRef}>
+          <Box sx={style}>
             <div>
               <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
                 Chi tiết phiếu
@@ -534,12 +571,7 @@ const WarehouseCard = () => {
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleRowsPerPage}
                     ></TablePagination>
-                    <button
-                      onClick={handlePrint}
-                      className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
-                    >
-                      Xuất PDF
-                    </button>
+
                   </div>
                 </Paper>
               </>
@@ -547,7 +579,7 @@ const WarehouseCard = () => {
           </Box>
         </Modal>
       )}
-    </div>
+</div>
   );
 };
 

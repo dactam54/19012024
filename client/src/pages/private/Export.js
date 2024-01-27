@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { GrLinkPrevious } from "react-icons/gr";
 import { MdOutlineClear } from "react-icons/md";
-import { set } from "date-fns";
+
 const tableCellStyle = {
   border: "1px solid #ddd",
   padding: "8px",
@@ -275,20 +275,6 @@ const Export = () => {
         />
       </div>
 
-      {/* <div style={flexContainerStyle}>
-        <label htmlFor="note" style={labelStyle}>
-          Tìm kiếm :
-        </label>
-        <input
-          type="text"
-          placeholder="Tìm kiếm sản phẩm"
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-          style={inputStyle}
-        />
-        <MdOutlineClear />
-      
-      </div> */}
 
       <div style={flexContainerStyle}>
   <label htmlFor="note" style={labelStyle}>
@@ -359,59 +345,7 @@ const Export = () => {
               </option>
             ))}
       </select>
-      {selectedValue && <p>Selected Value: {selectedValue}</p>}
-
-      {/* {selectedItems.length > 0 && (
-        <div style={{ overflowY: "auto", maxHeight: "300px", border:"1px solid black", marginTop:"20px"  }}>
-          <table style={{ borderCollapse: "collapse", width: "100%" }}>
-            <thead>
-              <tr>
-                <th style={tableCellStyle1}>ID</th>
-                <th style={{ ...tableCellStyle1, width:"100px"}}>Số lượng</th>
-                <th style={tableCellStyle1}>Diễn giải</th>
-                <th style={{ ...tableCellStyle1, width:"100px"}}>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedItems.map((item, index) => (
-                <tr key={index}>
-                  <td style={tableCellStyle}>{item.value}</td>
-                  <td style={tableCellStyle}>
-                    <input
-                      ref={
-                        index === selectedItems.length - 1
-                          ? quantityInputRef
-                          : null
-                      }
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(parseInt(e.target.value), index)
-                      }
-                      min={1}
-                      style={{ width: "70px", padding: "2px"}}
-                    />
-                  </td>
-                  <td style={tableCellStyle}>
-                    <input
-                      type="text"
-                      value={item.note}
-                      onChange={(e) => handleNoteChange(e.target.value, index)}
-                      style={{ width: "100%", padding: "2px"}}
-                    />
-                  </td>
-                  <td style={{ ...tableCellStyle, textAlign: 'center' }}>
-                    <button onClick={() => handleDeleteItem(index)}>
-                      <MdDelete size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )} */}
-      
+    
       {selectedItems.length > 0 && (
   <div style={{ overflowY: "auto", maxHeight: "300px", border: "1px solid black", marginTop: "20px" }}>
     <table style={{ borderCollapse: "collapse", width: "100%" }}>
