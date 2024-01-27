@@ -17,7 +17,7 @@ const System = () => {
     return (
         <Fragment>
             {isLoggedIn && <div className='w-full flex h-screen bg-white'>
-                <div className='w-[237px]  px-[6px] pb-[60px] pt-6 font-semibold flex-none'>
+                <div className='w-[237px]  px-[6px] pb-[60px] pt-6 font-semibold flex-none bg-gray-200'>
                     <AdminSidebar />
                 </div>
                 <div className='flex-auto p-[22px] h-full overflow-y-auto'>

@@ -39,11 +39,11 @@ export const adminSidebar = [
   //   icons: <FaProductHunt size={22} />,
   //   path: path.SYSTEM + "/" + path.MANAGE_EXPORT,
   // },
-  // {
-  //   name: "Thẻ kho",
-  //   icons: <RiBillLine size={22} />,
-  //   path: path.SYSTEM + "/" + path.WAREHOUSE_CARD,
-  // },
+  {
+    name: "Tra cứu",
+    icons: <RiBillLine size={22} />,
+    path: path.SYSTEM + "/" + path.WAREHOUSE_CARD,
+  },
 
   // {
   //   name: "Lịch sử Nhập/Xuất",

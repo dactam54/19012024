@@ -8,7 +8,7 @@ import icons from "../utils/icons";
 
 
 const activedStyles =
-  "flex gap-2 py-[13px] pr-[31px] pl-4 items-center bg-gray-200  rounded-md";
+  "flex gap-2 py-[13px] pr-[31px] pl-4 items-center bg-gray-400  rounded-md";
 const notActivedStyles = "flex gap-2 py-[13px] pr-[31px] pl-4 items-center";
 
 const AdminSidebar = () => {

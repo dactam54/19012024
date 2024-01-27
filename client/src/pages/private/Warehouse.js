@@ -261,13 +261,13 @@ const Warehouse = () => {
         >
           <span>Tra cứu</span>
         </button>
-        <button
+        {/* <button
           type="button"
           className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
           onClick={() => handlePrint1()}
         >
           <span>Xuất file </span>
-        </button>
+        </button> */}
       </div>
       <div></div>
       {loading ? (
@@ -527,12 +527,13 @@ const Warehouse = () => {
                                   style={{
                                     border: "1px solid #ddd",
                                     textAlign: "center",
+                              
                                   }}
                                 >
                                   {row?.hoaDon?.hoaDonNhapId
                                     ? row?.hoaDon?.quantity +
                                       row?.hoaDon?.oldQuantity
-                                    : row?.hoaDon?.oldQuantity -
+                                    : row?.hoaDon?.newQuantity -
                                       row?.hoaDon?.quantity}
                                 </TableCell>
 

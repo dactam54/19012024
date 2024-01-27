@@ -30,7 +30,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 1100,
+  width: 600,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -170,7 +170,7 @@ const WarehouseCard = () => {
     if (!dateRange.startDate || !dateRange.endDate) {
       const currentDate = new Date();
       const endDate = currentDate.toISOString().slice(0, 16);
-      const startDate = new Date(currentDate - 60 * 24 * 60 * 60 * 1000)
+      const startDate = new Date(currentDate - 30 * 24 * 60 * 60 * 1000)
         .toISOString()
         .slice(0, 16);
       setDateRange({
