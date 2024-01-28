@@ -29,6 +29,7 @@ import { useRef } from "react";
 import { Print } from "@mui/icons-material";
 
 import Xlsx from "../../utils/Xlsx";
+import { MdDownload } from "react-icons/md";
 const style = {
   position: "absolute",
   top: "50%",
@@ -351,7 +352,7 @@ const Warehouse = () => {
                       onClick={handleExcel}
                      className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
                     >
-                      Xuất File Excel
+                     Xuất File Excel
                     </button>
                   </div> 
 

@@ -22,7 +22,7 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import Xlsx from "../../utils/Xlsx";
 import { GrLinkPrevious } from "react-icons/gr";
-
+import { MdDownload } from "react-icons/md";
 const style = {
   position: "absolute",
   top: "50%",
