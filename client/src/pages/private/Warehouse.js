@@ -27,6 +27,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useRef } from "react";
 import { Print } from "@mui/icons-material";
+
 import Xlsx from "../../utils/Xlsx";
 const style = {
   position: "absolute",
@@ -100,10 +101,6 @@ const Warehouse = () => {
   const [dataModal, setDataModal] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [dateRange, setDateRange] = useState({
-    startDate: "",
-    endDate: "",
-  });
   const [keySearch, setKeySearch] = useState("");
 
   const [modalRaw, setModalRaw] = useState([]);
@@ -183,20 +180,6 @@ const Warehouse = () => {
     fetchData();
   }, [page, keySearch]);
 
-  const handleStartDateChange = (e) => {
-    setDateRange((prev) => ({
-      ...prev,
-      startDate: e.target.value,
-    }));
-  };
-
-  const handleEndDateChange = (e) => {
-    setDateRange((prev) => ({
-      ...prev,
-      endDate: e.target.value,
-    }));
-  };
-
   const handlePrint = useReactToPrint({
     onBeforeGetContent: () => setLoading(true),
     content: () => paperRef.current,
@@ -206,17 +189,29 @@ const Warehouse = () => {
       console.log(err);
     },
   });
-  const paperRef1 = useRef();
+ 
+  const handleExcel = async () => {
+    try {
+      const response = await apiGetProductsAdmin({ page: page }); // Fetch the initial data
+      if (response.productDatas.rows.length > 0) {
+        const exportData = response.productDatas.rows.map((row, index) => ({
+          STT: index + 1,
+          "Ảnh sản phẩm": row.thumb,
+          "Tên sản phẩm": row.name,
+          "Nhãn hiệu": row.brand,
+          "Loại hàng": row.catalog,
+          "Số lượng": row.quantity,
+          "Thao tác": "", 
+        }));
+        
+        await Xlsx.exportExcel([...exportData], "Danh sách sản phẩm", "Sản phẩm");
+      }
+    } catch (error) {
+      console.error("Error exporting to Excel:", error);
+    }
+  };
+  
 
-  const handlePrint1 = useReactToPrint({
-    onBeforeGetContent: () => setLoading(true),
-    content: () => paperRef1.current,
-    onAfterPrint: () => setLoading(false),
-    onPrintError: (err) => {
-      toast.error("Có lỗi xảy ra khi in phiếu");
-      console.log(err);
-    },
-  });
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -261,19 +256,13 @@ const Warehouse = () => {
         >
           <span>Tra cứu</span>
         </button>
-        {/* <button
-          type="button"
-          className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
-          onClick={() => handlePrint1()}
-        >
-          <span>Xuất file </span>
-        </button> */}
+       
       </div>
       <div></div>
       {loading ? (
         <Loading />
       ) : (
-        <Paper sx={{ width: "100%" }} ref={paperRef1}>
+        <Paper sx={{ width: "100%" }} >
           <TableContainer sx={{ maxHeight: 850 }}>
             <Table stickyHeader>
               <TableHead>
@@ -321,7 +310,7 @@ const Warehouse = () => {
                       ?.slice(page * rowPerPage, page * rowPerPage + rowPerPage)
                       .map((row, index) => {
                         return (
-                          <TableRow hover key={row.id} ref={paperRef1}>
+                          <TableRow hover key={row.id} >
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>
                               <img
@@ -356,6 +345,17 @@ const Warehouse = () => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleRowsPerPage}
           ></TablePagination>
+
+                   <div style={{ display: "flex", flexDirection: "rows" }}>
+                    <button
+                      onClick={handleExcel}
+                     className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
+                    >
+                      Xuất File Excel
+                    </button>
+                  </div> 
+
+                 
         </Paper>
       )}
 
@@ -540,16 +540,7 @@ const Warehouse = () => {
                                 <TableCell>
                                   {row?.hoaDon?.note}
                                 </TableCell>
-                                {/* <TableCell style={{ border: "1px solid #ddd" }}>
-                                  <Link
-                                    to={
-                                      "/he-thong/the-kho?hoaDonId=" +
-                                      row?.hoaDonId
-                                    }
-                                  >
-                                    HD-{row?.hoaDonId}
-                                  </Link>
-                                </TableCell> */}
+                               
                               </TableRow>
                             );
                           })}
@@ -628,14 +619,8 @@ const Warehouse = () => {
                       onRowsPerPageChange={handleRowsPerPage}
                     ></TablePagination>
 
-                    <button
-                      onClick={handlePrint}
-                      className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
-                    >
-                      <Print />
-                      Xuất PDF
-                    </button>
                   </div>
+                  
                 </Paper>
               </>
             )}

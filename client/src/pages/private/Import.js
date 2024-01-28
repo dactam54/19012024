@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { GrLinkPrevious } from "react-icons/gr";
 import { MdOutlineClear } from "react-icons/md";
-import { set } from "date-fns";
+import Xlsx from "../../utils/Xlsx";
 const tableCellStyle = {
   border: "1px solid #ddd",
   padding: "8px",
@@ -158,8 +158,10 @@ const Import = () => {
         date: "",
         note: "",
       });
+
       setSelectedItems([]);
       fetchProducts();
+      handleExcel();
       navigate("/he-thong/thong-tin-kho");
     }
   };
@@ -215,6 +217,59 @@ const Import = () => {
     ]);
     setSelectedValue("");
   };
+
+
+  const handleExcel = async () => {
+    // try {
+    //   if (selectedItems && selectedItems.length > 0) {
+    //     const exportData = selectedItems.map((item, index) => {
+    //       const product = data?.rows.find((product) => product.id === item.value);
+
+    //       return {
+    //         "Người giao": formData.shipper,
+    //         "Người nhận": formData.user,
+    //         "Ngày Nhập": formData.date,
+    //         "Diễn giải": item.note,
+    //         STT: index + 1,
+    //         ID: item.value,
+    //         "Ảnh sản phẩm": product?.thumb,
+    //         "Tên sản phẩm": product?.name,
+    //         "Số lượng": item.quantity,
+    //         "Diễn giải": item.note,
+    //       };
+    //     });
+
+    //     await Xlsx.exportExcel([...exportData,], "Phiếu nhập", "Phiếu nhập");
+    //   }
+    // } catch (error) {
+    //   console.error("Error exporting to Excel:", error);
+    // }
+
+    try {
+      if (selectedItems && selectedItems.length > 0) {
+        const exportData = [];
+        exportData.push({ "Thông tin": "Người giao", "Dữ liệu": formData.shipper });
+        exportData.push({ "Thông tin": "Người nhận", "Dữ liệu": formData.user });
+        exportData.push({ "Thông tin": "Ngày Nhập", "Dữ liệu": formData.date });
+        exportData.push({ "Thông tin": "Diễn giải", "Dữ liệu": formData.note });
+        selectedItems.forEach((item, index) => {
+          const product = data?.rows.find((product) => product.id === item.value);
+          exportData.push({
+            STT: index + 1,
+            ID: item.value,
+            "Ảnh sản phẩm": product?.thumb,
+            "Tên sản phẩm": product?.name,
+            "Số lượng": item.quantity,
+          });
+        });
+
+        await Xlsx.exportExcel([...exportData,], "Phiếu xuất", "Phiếu xuất");
+      }
+    } catch (error) {
+      console.error("Error exporting to Excel:", error);
+    }
+  };
+  
   return (
     <div>
       <div onClick={() => navigate("/he-thong/thong-tin-kho")} style={{ cursor: "pointer" }}>
@@ -500,6 +555,20 @@ const Import = () => {
         >
           <span>Hủy phiếu</span>
         </Button>
+
+        <Button
+          onClick={handleExcel}
+          className={buttonClass1}
+          disabled={isImportButtonDisabled}
+          style={{ marginTop: "20px", marginLeft: "20px" }}
+          variant="contained"
+          color="success"
+        >
+          <span>Xuất Excel</span>
+        </Button>
+
+        
+        
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ import { Loading } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
 import { useNavigate } from "react-router";
 import { GrLinkPrevious } from "react-icons/gr";
-
+import Xlsx from "../../utils/Xlsx";
 
 const style = {
   position: "absolute",
@@ -36,10 +36,10 @@ const tableCellStyle1 = {
   // border: "1px solid black",
   padding: "8px",
   textAlign: "left",
-  position: 'sticky',
-  top: "-1px", 
+  position: "sticky",
+  top: "-1px",
   zIndex: 100,
-  backgroundColor: "#ddd"
+  backgroundColor: "#ddd",
 };
 
 const columns = [
@@ -88,7 +88,6 @@ const HistoryBill = () => {
     endDate: "",
   });
 
-  console.log("dateRange", dateRange);
   const [keySearch, setKeySearch] = useState("");
 
   const handleOpen = () => {
@@ -97,15 +96,12 @@ const HistoryBill = () => {
   const handleClose = () => setOpen(false);
 
   const handleRender = (id) => {
-    console.log("id", id);
     data.map((item) => {
       item.id === id && setDataModal(item.hoaDons);
     });
     data.map((item) => {
       item.id === id && setNoteParent(item.note);
-    })
-    console.log("modal123", dataModal);
-    console.log("noteParent", noteParent);
+    });
     handleOpen();
   };
 
@@ -166,7 +162,7 @@ const HistoryBill = () => {
       console.log("filteredSearch", filteredSearch);
     } else {
       setData(data);
-      console.log("data", data);
+      
     }
   };
 
@@ -190,12 +186,62 @@ const HistoryBill = () => {
 
   const navigate = useNavigate();
 
+  const handleExcel = () => {
+    try {
+      if (dataModal && dataModal.length > 0) {
+        const exportData = dataModal.map((rowData, index) => ({
+          STT: index + 1,
+          "Tên sản phẩm": rowData.product?.name,
+          "Mã sản phẩm": rowData.productId?.slice(0, 8),
+          "Số lượng": rowData.quantity,
+          "Diễn giải": rowData.note,
+        }));
+  
+        const sheet = Xlsx.utils.json_to_sheet(exportData);
+        const workbook = Xlsx.utils.book_new();
+        Xlsx.utils.book_append_sheet(workbook, sheet, "Chi tiết phiếu");
+  
+        // Save the workbook as an Excel file
+        Xlsx.writeFile(workbook, "Chi_tiet_phieu.xlsx");
+      }
+    } catch (error) {
+      console.error("Error exporting to Excel:", error);
+    }
+  };
+  
+  
+  
+  // const handleExcel = () => {
+  //   try {
+  //     if (dataModal && dataModal.length > 0) {
+  //       const exportData = dataModal.map((row, index) => ({
+  //         STT: index + 1,
+  //         "Tên sản phẩm": row.product.name,
+  //         "Mã sản phẩm": row.productId.slice(0, 8),
+  //         "Số lượng": row.quantity,
+  //         "Diễn giải": row.note,
+  //       }));
+
+  //       const sheet = Xlsx.utils.json_to_sheet(exportData);
+  //       const workbook = Xlsx.utils.book_new();
+  //       Xlsx.utils.book_append_sheet(workbook, sheet, "Chi tiết phiếu");
+
+  //       // Save the workbook as an Excel file
+  //       Xlsx.writeFile(workbook, "Chi_tiet_phieu.xlsx");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error exporting to Excel:", error);
+  //   }
+  // };
+
   return (
     <div style={{ textAlign: "center" }}>
-
-    <div onClick={()=> navigate("/he-thong/thong-tin-kho")} style={{cursor:"pointer"}}>
-    <GrLinkPrevious  size={25}/>
-    </div>
+      <div
+        onClick={() => navigate("/he-thong/thong-tin-kho")}
+        style={{ cursor: "pointer" }}
+      >
+        <GrLinkPrevious size={25} />
+      </div>
       <h3 className="font-bold text-[30px] pb-2 ">Lịch sử phiếu </h3>
 
       <input
@@ -346,91 +392,119 @@ const HistoryBill = () => {
               <div>
                 Thời gian :
                 <span>
-                    {/* {formatLocalTime(dataModal[0]?.date)} */}
-                    {/* {formatLocalTime(dataModal[0]?.createdAt)} */}
-                    {
-                      formatLocalTime(dataModal[0]?.hoaDonNhap?.date || dataModal[0]?.hoaDonXuat?.date)
-                    }
+                  {formatLocalTime(
+                    dataModal[0]?.hoaDonNhap?.date ||
+                      dataModal[0]?.hoaDonXuat?.date
+                  )}
                 </span>
-
-                
               </div>
               <div>
                 Diễn giải :
-                <span>
-                 {noteParent || "Chưa có thông tin diễn giải"}
-                </span>
+                <span>{noteParent || "Chưa có thông tin diễn giải"}</span>
               </div>
             </div>
 
             {dataModal && (
               <>
-                <div >
-                <Paper>
-                  <TableContainer  style={{ overflowY: "auto", maxHeight: "400px", border:"1px solid black", marginTop:"20px"  }}>
-                    <Table stickyHeader style={{ width: "100%",}}>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell style={{...tableCellStyle1}}>STT</TableCell>
-                          <TableCell style={{...tableCellStyle1}}>Ảnh</TableCell>
-                          {/* <TableCell>Người giao</TableCell> */}
-                          <TableCell style={{...tableCellStyle1,width:"450px"}}>Tên sản phẩm </TableCell>
-                          <TableCell style={{ ...tableCellStyle1,width: "120px" }}>
-                            Mã sản phẩm
-                          </TableCell>
-                          <TableCell style={{ ...tableCellStyle1,width: "120px" }}>Số lượng</TableCell>
-                          <TableCell style={{ ...tableCellStyle1 ,width: "250px"}}>Diễn giải</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {dataModal
-                          .slice(
-                            page * rowPerPage,
-                            page * rowPerPage + rowPerPage
-                          )
-                          .map((row, index) => {
-                            return (
-                              <>
-                                <TableRow key={row?.id}>
-                                  <TableCell>{index + 1}</TableCell>
-                                  <TableCell>
-                                    <img
-                                      src={row.product.thumb}
-                                      alt="ảnh sản phẩm"
-                                      className="h-[50px] object-contain"
-                                    />
-                                  </TableCell>
-                                  {/* <TableCell>
+                <div>
+                  <button
+                    onClick={handleExcel}
+                    className="py-2 px-4 mt-4 bg-blue-600 rounded-md text-white font-semibold"
+                  >
+                    Xuất Excel
+                  </button>
+                </div>
+                <div>
+                  <Paper>
+                    <TableContainer
+                      style={{
+                        overflowY: "auto",
+                        maxHeight: "400px",
+                        border: "1px solid black",
+                        marginTop: "20px",
+                      }}
+                    >
+                      <Table stickyHeader style={{ width: "100%" }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell style={{ ...tableCellStyle1 }}>
+                              STT
+                            </TableCell>
+                            <TableCell style={{ ...tableCellStyle1 }}>
+                              Ảnh
+                            </TableCell>
+                            {/* <TableCell>Người giao</TableCell> */}
+                            <TableCell
+                              style={{ ...tableCellStyle1, width: "450px" }}
+                            >
+                              Tên sản phẩm{" "}
+                            </TableCell>
+                            <TableCell
+                              style={{ ...tableCellStyle1, width: "120px" }}
+                            >
+                              Mã sản phẩm
+                            </TableCell>
+                            <TableCell
+                              style={{ ...tableCellStyle1, width: "120px" }}
+                            >
+                              Số lượng
+                            </TableCell>
+                            <TableCell
+                              style={{ ...tableCellStyle1, width: "250px" }}
+                            >
+                              Diễn giải
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {dataModal
+                            .slice(
+                              page * rowPerPage,
+                              page * rowPerPage + rowPerPage
+                            )
+                            .map((row, index) => {
+                              return (
+                                <>
+                                  <TableRow key={row?.id}>
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell>
+                                      <img
+                                        src={row.product.thumb}
+                                        alt="ảnh sản phẩm"
+                                        className="h-[50px] object-contain"
+                                      />
+                                    </TableCell>
+                                    {/* <TableCell>
                                     {row?.hoaDonNhap?.shipper ||
                                       row?.hoaDonXuat?.shipper}
                                   </TableCell> */}
-                                  <TableCell>{row?.product?.name}</TableCell>
-                                  <TableCell>
-                                    {row?.productId.slice(0, 8)}
-                                  </TableCell>
-                                  <TableCell>{row?.quantity}</TableCell>
-                                  <TableCell>{row?.note}</TableCell>
-                                </TableRow>
-                              </>
-                            );
-                          })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div>
-                    <TablePagination
-                      rowsPerPageOptions={[10, 15, 20]}
-                      rowsPerPage={rowPerPage}
-                      page={page}
-                      count={dataModal.length}
-                      component="div"
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleRowsPerPage}
-                    ></TablePagination>
-                  </div>
-                </Paper>
+                                    <TableCell>{row?.product?.name}</TableCell>
+                                    <TableCell>
+                                      {row?.productId.slice(0, 8)}
+                                    </TableCell>
+                                    <TableCell>{row?.quantity}</TableCell>
+                                    <TableCell>{row?.note}</TableCell>
+                                  </TableRow>
+                                </>
+                              );
+                            })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                    <div>
+                      <TablePagination
+                        rowsPerPageOptions={[10, 15, 20]}
+                        rowsPerPage={rowPerPage}
+                        page={page}
+                        count={dataModal.length}
+                        component="div"
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleRowsPerPage}
+                      ></TablePagination>
+                    </div>
+                  </Paper>
                 </div>
-               
               </>
             )}
           </Box>
