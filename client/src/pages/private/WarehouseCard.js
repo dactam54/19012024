@@ -279,7 +279,6 @@ const WarehouseCard = () => {
     return true;
   };
 
-  
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   const openPrintModal = () => {
@@ -671,7 +670,7 @@ const WarehouseCard = () => {
           selectedItems={dataModal.hoaDons}
           formData={dataModal}
           closeModal={closePrintModal}
-          data={data} 
+          data={data}
           text={"Phiếu Nhập"}
         />
       </Modal>
