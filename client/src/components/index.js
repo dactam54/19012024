@@ -12,4 +12,5 @@ export { default as ProductChart } from "./ProductChart";
 export { default as EditImagesProduct } from "./EditImagesProduct";
 export { default as Images } from "./Images";
 export { default as Specification } from "./Specification";
+export { default as PrintModal } from "./PrintModal";
 // export { default as ImportManyProduct } from "./ImportManyProduct";

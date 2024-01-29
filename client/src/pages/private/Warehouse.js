@@ -26,10 +26,8 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useRef } from "react";
-import { Print } from "@mui/icons-material";
-
 import Xlsx from "../../utils/Xlsx";
-import { MdDownload } from "react-icons/md";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -41,19 +39,6 @@ const style = {
   p: 4,
   borderRadius: "10px",
 };
-
-
-const tableCellStyle1 = {
-  // border: "1px solid black",
-  padding: "8px",
-  textAlign: "left",
-  position: 'sticky',
-  top: "-1px", 
-  zIndex: 100,
-  backgroundColor: "#ddd"
-};
-
-
 const columns = [
   { field: "id", name: "ID", width: 90 },
 
@@ -202,7 +187,6 @@ const Warehouse = () => {
           "Nhãn hiệu": row.brand,
           "Loại hàng": row.catalog,
           "Số lượng": row.quantity,
-          "Thao tác": "", 
         }));
         
         await Xlsx.exportExcel([...exportData], "Danh sách sản phẩm", "Sản phẩm");
@@ -270,7 +254,7 @@ const Warehouse = () => {
                 <TableRow>
                   {columns.map((column) => (
                     <TableCell
-                      style={{ backgroundColor: "black", color: "white" }}
+                      style={{ backgroundColor: "#ddd", color: "black" }}
                       key={column.field}
                     >
                       {column.name}

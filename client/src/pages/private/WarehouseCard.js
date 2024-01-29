@@ -14,7 +14,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { Loading } from "../../components";
+import { Button, Loading } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
 import { useNavigate, useParams } from "react-router";
 import { Link, useSearchParams } from "react-router-dom";
@@ -22,7 +22,8 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import Xlsx from "../../utils/Xlsx";
 import { GrLinkPrevious } from "react-icons/gr";
-import { MdDownload } from "react-icons/md";
+import PrintCard from "../../components/PrintCard";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -34,6 +35,7 @@ const style = {
   p: 4,
   borderRadius: "10px",
 };
+
 const columns = [
   { field: "id", name: "ID", width: 40 },
 
@@ -93,7 +95,6 @@ const columns = [
 ];
 
 const WarehouseCard = () => {
-  const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [page, setPage] = useState(0);
   const [rowPerPage, setRowPerPage] = useState(10);
@@ -104,34 +105,16 @@ const WarehouseCard = () => {
     startDate: "",
     endDate: "",
   });
+  const [keySearch, setKeySearch] = useState("");
+  const pdfPrintRef = useRef();
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const hoaDonId = params.get("hoaDonId");
 
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-
-  // const handleRender = async (id) => {
-  //   try {
-  //     console.log("idmodal", id);
-
-  //     const [responsePhieuKhoNhap, responsePhieuKhoXuat] = await Promise.all([
-  //       apiPhieuKhoNhap(id),
-  //       apiPhieuKhoXuat(id),
-  //     ]);
-  //     const dataTitle = responsePhieuKhoNhap.hoaDons.map(
-  //       (item) => typeof item.hoaDonNhapId !== Number
-  //     )
-  //       ? responsePhieuKhoXuat
-  //       : responsePhieuKhoNhap;
-  //     console.log("dataModal:", dataTitle);
-  //     setDataModal(dataTitle);
-  //     handleOpen();
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  const pdfPrintRef = useRef();
 
   const handleRender = async (id) => {
     try {
@@ -139,15 +122,12 @@ const WarehouseCard = () => {
         apiPhieuKhoNhap(id),
         apiPhieuKhoXuat(id),
       ]);
-
       const data =
         JSON.stringify(responsePhieuKhoNhap) === "{}"
           ? responsePhieuKhoXuat
           : responsePhieuKhoNhap;
-
-      // console.log(data);
-
       setDataModal(data);
+      console.log("dataModal", dataModal);
       handleOpen();
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -161,8 +141,7 @@ const WarehouseCard = () => {
     setRowPerPage(+event.target.value);
     setPage(0);
   };
-  const [keySearch, setKeySearch] = useState("");
-  // console.log("keySearch", keySearch);
+
   const fetchData = async () => {
     setLoading(true);
     if (!dateRange.startDate || !dateRange.endDate) {
@@ -187,8 +166,6 @@ const WarehouseCard = () => {
     setLoading(false);
   };
 
-
-
   let handleExcel = async () => {
     try {
       const response = await apiGetAllTheKhos({
@@ -196,10 +173,8 @@ const WarehouseCard = () => {
         endDate: dateRange.endDate,
         keyword: keySearch,
       });
-  
+
       if (response.length > 0) {
-       
-       
         const exportData = response.map((row) => ({
           STT: row.id,
           "Mã chứng từ": `CT-${row.hoaDonId}`,
@@ -211,8 +186,7 @@ const WarehouseCard = () => {
           Loại: row.type === "nhap" ? "Nhập hàng" : "Xuất hàng",
           Ngày: formatLocalTime(row.date),
         }));
-  
-       
+
         const summaryRow = {
           STT: "",
           "Mã chứng từ": "",
@@ -234,14 +208,16 @@ const WarehouseCard = () => {
           Loại: "",
           Ngày: "",
         };
-        await Xlsx.exportExcel([...exportData, summaryRow], "Phiếu kho", "Phiếu kho");
+        await Xlsx.exportExcel(
+          [...exportData, summaryRow],
+          "Phiếu kho",
+          "Phiếu kho"
+        );
       }
     } catch (error) {
       console.error("Error exporting to Excel:", error);
     }
   };
-  
-  
 
   const handleStartDateChange = (e) => {
     setDateRange((prev) => ({
@@ -265,7 +241,6 @@ const WarehouseCard = () => {
       console.log(err);
     },
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!dateRange.startDate || !dateRange.endDate) {
@@ -283,10 +258,7 @@ const WarehouseCard = () => {
     fetchData();
   }, [dateRange.startDate, dateRange.endDate, keySearch]);
 
-  const [params] = useSearchParams();
-  const hoaDonId = params.get("hoaDonId");
-
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       if (!hoaDonId) return;
       await handleRender(hoaDonId);
@@ -306,6 +278,18 @@ const WarehouseCard = () => {
     }
     return true;
   };
+
+  
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+
+  const openPrintModal = () => {
+    setIsPrintModalOpen(true);
+  };
+
+  const closePrintModal = () => {
+    setIsPrintModalOpen(false);
+  };
+  const buttonClass1 = `py-2 px-4 rounded-md font-semibold flex items-center justify-center gap-2 ${"bg-green-600 text-white"}`;
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -353,7 +337,7 @@ const WarehouseCard = () => {
                 <TableRow>
                   {columns.map((column, index) => (
                     <TableCell
-                      style={{ backgroundColor: "black", color: "white" }}
+                      style={{ backgroundColor: "#ddd", color: "black" }}
                       key={column.field}
                     >
                       {column.name}
@@ -370,7 +354,9 @@ const WarehouseCard = () => {
                       return (
                         <TableRow hover key={row.id}>
                           <TableCell>{index + 1}</TableCell>
-                          <TableCell>{`CT-${row.hoaDonId}`}</TableCell>
+                          <TableCell
+                            style={{ width: "120px" }}
+                          >{`CT-${row.hoaDonId}`}</TableCell>
                           <TableCell>
                             <img
                               src={row.product.thumb}
@@ -378,7 +364,9 @@ const WarehouseCard = () => {
                               className="h-[50px] object-contain"
                             />
                           </TableCell>
-                          <TableCell>{row.product.name}</TableCell>
+                          <TableCell style={{ width: "400px" }}>
+                            {row.product.name}
+                          </TableCell>
 
                           <TableCell>
                             {row.type === "nhap"
@@ -407,6 +395,18 @@ const WarehouseCard = () => {
                           >
                             Xem chi tiết
                           </button>
+                          {/* <button
+                            onClick={() =>
+                              handleRender(
+                                row.type === "nhap"
+                                  ? row.hoaDon.hoaDonNhapId
+                                  : row.hoaDon.hoaDonXuatId
+                              )
+                            }
+                            className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
+                          >
+                            In
+                          </button> */}
                         </TableRow>
                       );
                     })}
@@ -665,6 +665,16 @@ const WarehouseCard = () => {
           </Box>
         </Modal>
       )}
+
+      <Modal isOpen={isPrintModalOpen} onRequestClose={closePrintModal}>
+        <PrintCard
+          selectedItems={dataModal.hoaDons}
+          formData={dataModal}
+          closeModal={closePrintModal}
+          data={data} 
+          text={"Phiếu Nhập"}
+        />
+      </Modal>
     </div>
   );
 };
