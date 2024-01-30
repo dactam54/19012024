@@ -6,8 +6,9 @@ class PrintCard extends React.Component {
     window.print();
   };
   render() {
-    const { selectedItems, formData, closeModal, data ,text} = this.props;
+    const { closeModal,text} = this.props;
 
+  
     const modalStyle = {
       fontFamily: "Arial, sans-serif",
       padding: "20px",
@@ -72,58 +73,7 @@ class PrintCard extends React.Component {
       <div style={modalStyle}>
         <h2 style={{textAlign:"center", justifyContent:"center" , fontWeight:"bold", fontSize:"25px"}}>{text}</h2>
 
-        <div style={infoSectionStyle}>
-          <p style={infoTextStyle}>
-            <strong>Người giao:</strong> {formData.shipper}
-          </p>
-          <p style={infoTextStyle}>
-            <strong>Người nhận:</strong> {formData.user}
-          </p>
-          <p style={infoTextStyle}>
-            <strong>Ngày Nhập:</strong> {formData.date}
-          </p>
-          <p style={infoTextStyle}>
-            <strong>Diễn giải:</strong> {formData.note}
-          </p>
-        </div>
-
-        {data?.rows && (
-          <div>
-            <table style={tableStyle}>
-              <thead>
-                <tr>
-                  <th style={{ ...tableCellStyle, ...tableHeaderStyle }}>ID</th>
-                  {/* <th style={{ ...tableCellStyle, ...tableHeaderStyle }}>Ảnh</th> */}
-                  <th style={{ ...tableCellStyle, ...tableHeaderStyle }}>Tên sản phẩm</th>
-                  <th style={{ ...tableCellStyle, ...tableHeaderStyle }}>Số lượng</th>
-                  <th style={{ ...tableCellStyle, ...tableHeaderStyle }}>Diễn giải</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedItems.map((item, index) => {
-                  const product = data?.rows.find((product) => product.id === item.value);
-
-                  return (
-                    <tr key={index}>
-                      <td style={tableCellStyle}>{item.value}</td>
-                      {/* <td style={tableCellStyle}>
-                        <img
-                          src={product.thumb}
-                          alt="ảnh sản phẩm"
-                          style={{ height: "50px", objectFit: "contain" }}
-                        />
-                      </td> */}
-                      <td style={tableCellStyle}>{product?.name}</td>
-                      <td style={tableCellStyle}>{item.quantity}</td>
-                      <td style={tableCellStyle}>{item.note}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-
+       
         <div style={buttonSectionStyle}>
           <button style={{ ...printButtonStyle }} onClick={this.handlePrint}>
             In Phiếu

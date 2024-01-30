@@ -102,10 +102,11 @@ const Warehouse = () => {
         startDate: "2023-01-08",
         endDate: "2025-01-20",
       });
-      setLoading(false);
+     
       if (response.length > 0) {
         setModalRaw(response);
       }
+      setLoading(false);
       console.log("modalRaw", modalRaw);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -210,17 +211,20 @@ const Warehouse = () => {
           onChange={(e) => setKeySearch(e.target.value)}
         />
       </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
       <div style={{ display: "flex" }}>
-        <button
+      <button
           type="button"
-          className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
+          className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold mr-3"
+          // className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
           onClick={() => navigate("/he-thong/quan-ly-nhap-hang")}
         >
           <span>Tạo phiếu nhập </span>
         </button>
         <button
           type="button"
-          className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
+          className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold mr-3"
+          // className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
           onClick={() => navigate("/he-thong/quan-ly-xuat-hang")}
         >
           <span>Tạo phiếu xuất </span>
@@ -228,7 +232,8 @@ const Warehouse = () => {
 
         <button
           type="button"
-          className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
+          className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold mr-3"
+          // className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
           onClick={() => navigate("/he-thong/quan-ly-lich-su-phieu")}
         >
           <span>Lịch sử phiếu </span>
@@ -236,14 +241,26 @@ const Warehouse = () => {
 
         <button
           type="button"
-          className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
+          className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold mr-3"
+          // className="py-2 px-4 bg-green-600 rounded-md text-white font-semibold flex items-center justify-center gap-2 mr-3"
           onClick={() => navigate("/he-thong/quan-ly-the-kho")}
         >
           <span>Tra cứu</span>
         </button>
+      </div>
+       <div>
+       <div style={{ display: "flex", flexDirection: "rows" }}>
+                    <button
+                      onClick={handleExcel}
+                     className="py-2 px-4 mt-4 bg-green-600 rounded-md text-white font-semibold"
+                    >
+                     Xuất File Excel
+                    </button>
+                  </div> 
+       </div>
        
       </div>
-      <div></div>
+      {/* <div></div> */}
       {loading ? (
         <Loading />
       ) : (

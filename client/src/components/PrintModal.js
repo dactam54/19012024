@@ -1,5 +1,6 @@
 import React from "react";
 import ReactToPrint from "react-to-print";
+import { formatLocalTime } from "../utils/fn";
 
 class PrintModal extends React.Component {
   handlePrint = () => {
@@ -7,18 +8,23 @@ class PrintModal extends React.Component {
   };
   render() {
     const { selectedItems, formData, closeModal, data ,text} = this.props;
+console.log("data",data)
 
     const modalStyle = {
       fontFamily: "Arial, sans-serif",
       padding: "20px",
       backgroundColor: "white",
       width: "80%",
-      maxWidth: "80%",
+      maxWidth: "100%",
       margin: "0 auto",
       border: "1px solid #ddd",
       borderRadius: "10px",
       boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       zIndex: "9999",
+    };
+
+    const printStyle = {
+      width: "100%", // Set the width to 100% for printing
     };
 
     const infoSectionStyle = {
@@ -68,8 +74,11 @@ class PrintModal extends React.Component {
       color: "white",
     };
 
+    const dateString = formatLocalTime(formData.date)
+    const [day, month, year] = dateString.split('/').map(Number);
+
     return (
-      <div style={modalStyle}>
+      <div style={{...modalStyle,...printStyle }}>
         <h2 style={{textAlign:"center", justifyContent:"center" , fontWeight:"bold", fontSize:"25px"}}>{text}</h2>
 
         <div style={infoSectionStyle}>
@@ -80,7 +89,8 @@ class PrintModal extends React.Component {
             <strong>Người nhận:</strong> {formData.user}
           </p>
           <p style={infoTextStyle}>
-            <strong>Ngày Nhập:</strong> {formData.date}
+          {/* formatLocalTime(formData.date) */}
+            <strong>Ngày Nhập:</strong> {formatLocalTime(formData.date)}
           </p>
           <p style={infoTextStyle}>
             <strong>Diễn giải:</strong> {formData.note}
@@ -123,6 +133,31 @@ class PrintModal extends React.Component {
             </table>
           </div>
         )}
+
+        
+        <div style={{ marginTop: "20px" }}>
+      <p style={{ textAlign: "right", marginBottom: "10px",marginRight :"5%"}}>
+      {` Ngày ${day} Tháng ${month} Năm ${year}`} 
+      </p>
+    
+   
+    <div style={{ textAlign: "right", marginRight :"5%" }}>
+        Ký xác nhận của người giao hàng
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+      </div>
+      <div style={{ textAlign: "right", marginRight :"5%" }}>
+        Ký xác nhận của người nhận hàng
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+      </div>
+    </div>
 
         <div style={buttonSectionStyle}>
           <button style={{ ...printButtonStyle }} onClick={this.handlePrint}>

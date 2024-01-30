@@ -22,14 +22,13 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import Xlsx from "../../utils/Xlsx";
 import { GrLinkPrevious } from "react-icons/gr";
-import PrintCard from "../../components/PrintCard";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 1000,
+  width: 1200,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -127,7 +126,7 @@ const WarehouseCard = () => {
           ? responsePhieuKhoXuat
           : responsePhieuKhoNhap;
       setDataModal(data);
-      console.log("dataModal", dataModal);
+      console.log("dataModal123", dataModal);
       handleOpen();
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -175,6 +174,46 @@ const WarehouseCard = () => {
       });
 
       if (response.length > 0) {
+        // const exportData = response.map((row) => ({
+        //   STT: row.id,
+        //   "Mã chứng từ": `CT-${row.hoaDonId}`,
+        //   "Ảnh sản phẩm": row.product.thumb,
+        //   "Tên sản phẩm": row.product.name,
+        //   "Tồn ĐK": row.type === "nhap" ? row.hoaDon.oldQuantity : "",
+        //   "Số lượng": row.hoaDon.quantity,
+        //   "Tồn CK": row.type === "nhap" ? row.hoaDon.newQuantity : "",
+        //   Loại: row.type === "nhap" ? "Nhập hàng" : "Xuất hàng",
+        //   Ngày: formatLocalTime(row.date),
+        //   "Ngày bắt đầu": dateRange.startDate, // Add this line
+        //   "Ngày kết thúc": dateRange.endDate, // Add this line
+        // }));
+
+        // const summaryRow = {
+        //   STT: "",
+        //   "Mã chứng từ": "",
+        //   "Ảnh sản phẩm": "",
+        //   "Tên sản phẩm": "Tổng cộng:",
+        //   "Tồn ĐK": response[0]?.hoaDon.oldQuantity,
+        //   "Số lượng": response.reduce(
+        //     (acc, cur) =>
+        //       acc +
+        //       (cur.hoaDon && cur.hoaDon.hoaDonNhapId ? cur.hoaDon.quantity : 0),
+        //     0
+        //   ),
+        //   "Tồn CK": response.reduce(
+        //     (acc, cur) =>
+        //       acc +
+        //       (cur.hoaDon && cur.hoaDon.hoaDonXuatId ? cur.hoaDon.quantity : 0),
+        //     0
+        //   ),
+        //   Loại: "",
+        //   Ngày: "",
+        // };
+        // await Xlsx.exportExcel(
+        //   [...exportData, summaryRow],
+        //   "Phiếu kho",
+        //   "Phiếu kho"
+        // );
         const exportData = response.map((row) => ({
           STT: row.id,
           "Mã chứng từ": `CT-${row.hoaDonId}`,
@@ -186,6 +225,15 @@ const WarehouseCard = () => {
           Loại: row.type === "nhap" ? "Nhập hàng" : "Xuất hàng",
           Ngày: formatLocalTime(row.date),
         }));
+
+        const headerRows = [
+          {
+            "Ngày bắt đầu": dateRange.startDate,
+            "Ngày kết thúc": dateRange.endDate,
+          },
+        ];
+
+        const excelData = [...headerRows, ...exportData];
 
         const summaryRow = {
           STT: "",
@@ -209,7 +257,7 @@ const WarehouseCard = () => {
           Ngày: "",
         };
         await Xlsx.exportExcel(
-          [...exportData, summaryRow],
+          excelData.concat(summaryRow),
           "Phiếu kho",
           "Phiếu kho"
         );
@@ -279,16 +327,7 @@ const WarehouseCard = () => {
     return true;
   };
 
-  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
-
-  const openPrintModal = () => {
-    setIsPrintModalOpen(true);
-  };
-
-  const closePrintModal = () => {
-    setIsPrintModalOpen(false);
-  };
-  const buttonClass1 = `py-2 px-4 rounded-md font-semibold flex items-center justify-center gap-2 ${"bg-green-600 text-white"}`;
+ 
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -582,6 +621,15 @@ const WarehouseCard = () => {
                           >
                             Mã sản phẩm
                           </TableCell>
+
+                          <TableCell
+                            style={{
+                              borderBottom: "1px solid black",
+                              backgroundColor: "#ddd",
+                            }}
+                          >
+                            Tên sản phẩm
+                          </TableCell>
                           <TableCell
                             style={{
                               width: "150px",
@@ -595,6 +643,7 @@ const WarehouseCard = () => {
                             style={{
                               borderBottom: "1px solid black",
                               backgroundColor: "#ddd",
+                              width: "100px",
                             }}
                           >
                             SL Tồn
@@ -603,6 +652,7 @@ const WarehouseCard = () => {
                             style={{
                               borderBottom: "1px solid black",
                               backgroundColor: "#ddd",
+                              width: "100px",
                             }}
                           >
                             SL Nhập
@@ -611,9 +661,10 @@ const WarehouseCard = () => {
                             style={{
                               borderBottom: "1px solid black",
                               backgroundColor: "#ddd",
+                              width: "120px",
                             }}
                           >
-                            SL Tồn cuối{" "}
+                            SL Tồn cuối
                           </TableCell>
                           <TableCell
                             style={{
@@ -636,6 +687,7 @@ const WarehouseCard = () => {
                               <TableRow key={row?.id}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{row?.productId} </TableCell>
+                                <TableCell>{row?.product.name} </TableCell>
                                 <TableCell>{`CT-${row?.id}`}</TableCell>
                                 <TableCell>{row?.oldQuantity}</TableCell>
                                 <TableCell>{row?.quantity}</TableCell>
@@ -664,16 +716,6 @@ const WarehouseCard = () => {
           </Box>
         </Modal>
       )}
-
-      <Modal isOpen={isPrintModalOpen} onRequestClose={closePrintModal}>
-        <PrintCard
-          selectedItems={dataModal.hoaDons}
-          formData={dataModal}
-          closeModal={closePrintModal}
-          data={data}
-          text={"Phiếu Nhập"}
-        />
-      </Modal>
     </div>
   );
 };

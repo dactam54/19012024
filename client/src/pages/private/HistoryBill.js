@@ -14,7 +14,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { Loading } from "../../components";
+import { Loading, PrintCard } from "../../components";
 import { formatLocalTime } from "../../utils/fn";
 import { useNavigate } from "react-router";
 import { GrLinkPrevious } from "react-icons/gr";
@@ -103,7 +103,9 @@ const HistoryBill = () => {
       item.id === id && setNoteParent(item.note);
     });
     handleOpen();
+    
   };
+
 
   const handleChangePage = (event, newpage) => {
     setPage(newpage);
@@ -113,6 +115,8 @@ const HistoryBill = () => {
     setRowPerPage(+event.target.value);
     setPage(0);
   };
+
+
 
   const [noteParent, setNoteParent] = useState("");
   const fetchData = async () => {
@@ -186,53 +190,11 @@ const HistoryBill = () => {
 
   const navigate = useNavigate();
 
-  const handleExcel = () => {
-    try {
-      if (dataModal && dataModal.length > 0) {
-        const exportData = dataModal.map((rowData, index) => ({
-          STT: index + 1,
-          "Tên sản phẩm": rowData.product?.name,
-          "Mã sản phẩm": rowData.productId?.slice(0, 8),
-          "Số lượng": rowData.quantity,
-          "Diễn giải": rowData.note,
-        }));
-  
-        const sheet = Xlsx.utils.json_to_sheet(exportData);
-        const workbook = Xlsx.utils.book_new();
-        Xlsx.utils.book_append_sheet(workbook, sheet, "Chi tiết phiếu");
-  
-        // Save the workbook as an Excel file
-        Xlsx.writeFile(workbook, "Chi_tiet_phieu.xlsx");
-      }
-    } catch (error) {
-      console.error("Error exporting to Excel:", error);
-    }
-  };
-  
-  
-  
-  // const handleExcel = () => {
-  //   try {
-  //     if (dataModal && dataModal.length > 0) {
-  //       const exportData = dataModal.map((row, index) => ({
-  //         STT: index + 1,
-  //         "Tên sản phẩm": row.product.name,
-  //         "Mã sản phẩm": row.productId.slice(0, 8),
-  //         "Số lượng": row.quantity,
-  //         "Diễn giải": row.note,
-  //       }));
+ 
 
-  //       const sheet = Xlsx.utils.json_to_sheet(exportData);
-  //       const workbook = Xlsx.utils.book_new();
-  //       Xlsx.utils.book_append_sheet(workbook, sheet, "Chi tiết phiếu");
-
-  //       // Save the workbook as an Excel file
-  //       Xlsx.writeFile(workbook, "Chi_tiet_phieu.xlsx");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error exporting to Excel:", error);
-  //   }
-  // };
+ 
+  
+  
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -273,26 +235,6 @@ const HistoryBill = () => {
           />
         </div>
       </div>
-
-      {/* <div>
-        <label htmlFor="startDate">Chọn ngày bắt đầu:</label>
-        <input
-          type="datetime-local"
-          id="startDate"
-          name="startDate"
-          value={dateRange.startDate}
-          onChange={handleStartDateChange}
-        />
-
-        <label htmlFor="endDate">Chọn ngày kết thúc:</label>
-        <input
-          type="datetime-local"
-          id="endDate"
-          name="endDate"
-          value={dateRange.endDate}
-          onChange={handleEndDateChange}
-        />
-      </div> */}
 
       {loading ? (
         <Loading />
@@ -343,6 +285,7 @@ const HistoryBill = () => {
                           >
                             Xem chi tiết
                           </button>
+                         
                         </TableRow>
                       );
                     })}
@@ -373,6 +316,7 @@ const HistoryBill = () => {
             <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
               Chi tiết phiếu
             </h1>
+           
             <div>
               <div>
                 Người giao :
@@ -406,14 +350,6 @@ const HistoryBill = () => {
 
             {dataModal && (
               <>
-                <div>
-                  <button
-                    onClick={handleExcel}
-                    className="py-2 px-4 mt-4 bg-blue-600 rounded-md text-white font-semibold"
-                  >
-                    Xuất Excel
-                  </button>
-                </div>
                 <div>
                   <Paper>
                     <TableContainer
@@ -510,6 +446,7 @@ const HistoryBill = () => {
           </Box>
         </Modal>
       )}
+
     </div>
   );
 };

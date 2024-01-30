@@ -15,13 +15,12 @@ import {
   WarehouseCard,
   HistoryBill,
   Warehouse,
-  PDF,
   Import,
   Export
 } from "./pages/private";
 
 import { ToastContainer } from "react-toastify";
-import ProductAll from "./pages/private/Warehouse";
+
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
