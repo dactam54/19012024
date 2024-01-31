@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import icons from '../../utils/icons'
-import { apiGetDashBoard , apiGetProductsAdmin, apiGetImportBills} from '../../apis/product'
+import { apiGetDashBoard , apiGetProductsAdmin, apiGetImportBills, apiGetAllPhieuNhap, apiGetAllPhieuXuat} from '../../apis/product'
 import { ProductChart } from '../../components'
 import { Doughnut } from 'react-chartjs-2';
+import { apiGetBrands } from '../../apis';
+import { set } from 'date-fns';
 const { HiUserGroup, BsCartFill, GrMoney } = icons
 
 const Statistics = () => {
     const [data, setData] = useState(null)
     const [total, setTotal] = useState(null)
+    const [brand, setBrands] = useState(null);
+    const [importBill, setImportBill] = useState(null);
+    const [exportBill, setExportBill] = useState(null);
 
+    
+
+
+    console.log('datachart',data?.statusChart)
     const [isMonth, setIsMonth] = useState(false)
     const [customTime, setCustomTime] = useState({
         from: '',
@@ -18,14 +27,27 @@ const Statistics = () => {
     const fetchDashboard = async (params) => {
         const response = await apiGetDashBoard(params)
         if (response.err === 0) setData(response.rs)
-
-        console.log('response.rs')
-        console.log('response123',response.rs.customer[0].createdAt.slice(0,10));
-        
     }
+    const fetchBrands = async () => {
+        const rs = await apiGetBrands();
+        if (rs.err === 0) setBrands(rs.brandDatas?.length);
+      };
+
+    const fetchImportBills = async () => {
+        const response1 = await apiGetAllPhieuNhap();
+        setImportBill(response1);
+        const response2 = await apiGetAllPhieuXuat();
+        setExportBill(response2);
+
+    }
+
+   useEffect(() => {
+    fetchBrands()
+    fetchImportBills()
+},[])
+
     const fetchProducts = async () => {
     const response = await apiGetProductsAdmin({ page: 1 })
-    
     if (response.err === 0) setTotal(response.productDatas)
     }
 
@@ -42,6 +64,8 @@ const Statistics = () => {
         setCustomTime({ from: '', to: '' })
     }
 
+    console.log('customTime',customTime )
+
     return (
         <div className='relative'>
             <div className='flex items-center justify-between border-b border-gray-800'>
@@ -53,29 +77,29 @@ const Statistics = () => {
                   <div className='flex-1 border bg-white rounded-md shadow-md flex p-4 items-center justify-between'>
                         <span className='flex flex-col'>
                             <span className='text-[24px] text-main'>{total?.count || 0}</span>
-                            <span className='text-sm text-gray-500'>TỔNG MẶT HÀNG</span>
+                            <span className='text-sm text-gray-500'>Số lượng sản phẩm</span>
                         </span>
                         <BsCartFill size={30} />
                     </div>
                     
                     <div className='flex-1 border bg-white rounded-md shadow-md flex p-4 items-center justify-between'>
                         <span className='flex flex-col'>
-                            <span className='text-[24px] text-main'>{total?.rows.reduce((total,el)=>total +el.quantity,0) || 0}</span>
-                            <span className='text-sm text-gray-500'>TỔNG SẢN PHẨM</span>
+                            <span className='text-[24px] text-main'>{brand}</span>
+                            <span className='text-sm text-gray-500'>Số lượng nhãn hiệu</span>
                         </span>
                         <BsCartFill size={30} />
                     </div>
 
                     <div className='flex-1 border bg-white rounded-md shadow-md flex p-4 items-center justify-between'>
                         <span className='flex flex-col'>
-                            <span className='text-[24px] text-main'></span>
-                            <span className='text-sm text-gray-500'>Số lượng nhập</span>
+                            <span className='text-[24px] text-main'>{importBill?.length}</span>
+                            <span className='text-sm text-gray-500'>Số phiếu nhập</span>
                         </span>
                         <BsCartFill size={30} />
                     </div>
                     <div className='flex-1 border bg-white rounded-md shadow-md flex p-4 items-center justify-between'>
                         <span className='flex flex-col'>
-                            <span className='text-[24px] text-main'></span>
+                            <span className='text-[24px] text-main'>{exportBill?.length}</span>
                             <span className='text-sm text-gray-500'>Số lượng xuất</span>
                         </span>
                         <BsCartFill size={30} />
@@ -127,11 +151,11 @@ const Statistics = () => {
                     </div>
 
                     <div className='w-[30%] bg-white flex-auto border shadow-md flex flex-col gap-4 relative rounded-md p-4'>
-                        <span className='font-bold'>Trạng thái đơn hàng</span>
+                        <span className='font-bold'>Tỉ lệ</span>
                         <span className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center'>
                             <span className='flex flex-col text-sm gap-1 items-center justify-center font-bold'>
                                 <span>Tổng đơn hàng</span>
-                                <span>{data?.statusChart?.reduce((sum, el) => +el.statusBill + sum, 0)}</span>
+                                <span>{importBill?.length + +exportBill?.length}</span>
                             </span>
                         </span>
 
@@ -143,10 +167,10 @@ const Statistics = () => {
                                 }
                             }}
                             data={{
-                                labels: data?.statusChart?.map(el => el.status),
+                                labels: [importBill?.length + ' Đã nhập', exportBill?.length + ' Đã xuất'],
                                 datasets: [
                                     {
-                                        data: data?.statusChart?.map(el => el.statusBill),
+                                        data: [importBill?.length, exportBill?.length],
                                         backgroundColor: [
                                             'rgba(255, 99, 132, 0.2)',
                                             'rgba(255, 189, 60, 0.2)',
@@ -165,28 +189,6 @@ const Statistics = () => {
                     </div>
                 </div>
                 
-                {/* <div className='mt-4 border shadow-md rounded-md p-4'>
-                    <span className='font-bold'>Thông tin chi tiết các đơn hàng</span>
-                    <div className='flex flex-col mt-4'>
-                        <div className='flex items-center justify-center px-2 py-4 border-t'>
-                            <span className='flex-1 font-medium'>Mã hóa đơn</span>
-                            <span className='flex-1 font-medium flex justify-center'>Người tạo</span>
-                            <span className='flex-1 font-medium flex justify-end'>Trạng thái</span>
-                        </div>
-
-                        {data?.customer?.map(el => (
-                            <div key={el.id} className='flex items-center justify-center px-2 py-4 border-t'>
-                                <span className='uppercase flex-1'>{'#' + el.id.slice(0, 8)}</span>
-                                <span className='flex-1 flex justify-center'>{el.customer.name}</span>
-                                <span className='flex-1 flex justify-end'>
-                                    <div
-                                        className={`w-[90px] ${el.status === 'Success' ? 'bg-green-500' : el.status === 'Pending' ? 'bg-orange-500' : 'bg-red-500'} py-1 flex items-center justify-center text-white `}
-                                    >{el.status}</div>
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
             </div>
         </div>
     )

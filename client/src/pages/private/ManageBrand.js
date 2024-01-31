@@ -12,7 +12,7 @@ import { CreateNewBrand } from "../../components";
 import { MdDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { RxUpdate } from "react-icons/rx";
-import { Button, Modal } from 'react-bootstrap';
+
 const { AiOutlinePlus, AiFillCaretDown } = icons;
 
 const ManageBrand = () => {
