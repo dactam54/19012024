@@ -15,7 +15,7 @@ export const adminSidebar = [
     path: path.SYSTEM + "/" + path.STATISTICS,
   },
   {
-    name: "Thông tin kho",
+    name: "Quản lý kho",
     icons: <RiBillLine size={22} />,
     path: path.SYSTEM + "/" + path.WAREHOUSE,
   },

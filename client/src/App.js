@@ -31,10 +31,10 @@ function App() {
   return (
     <div className="relative h-screen">
       <Routes>
-        <Route path={path.PUBLIC} element={<Public />}>
+        <Route path={path.PUBLIC} element={<Public />} >
           <Route path={path.LOGIN} element={<Login />} />
-          {/* <Route path={path.DETAIL} element={<Detail />} /> */}
-        </Route>
+        </Route> 
+
         <Route path={path.SYSTEM} element={<System />}>
           <Route path={path.STATISTICS} element={<Statistics />} />
           <Route path={path.WAREHOUSE} element={<Warehouse />} />
@@ -52,6 +52,7 @@ function App() {
           {/* <Route path={path.MANAGE_USER} element={<ManageUser />} /> */}
           {/* <Route path={path.MANAGE_Bill_EXPORT} element={<ManageExportBill />}/>
           <Route path={path.MANAGE_Bill_IMPORT} element={<ManageImportBill />}/> */}
+
         </Route>
       </Routes>
 
